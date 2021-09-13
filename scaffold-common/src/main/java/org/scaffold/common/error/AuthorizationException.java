@@ -13,11 +13,11 @@ public class AuthorizationException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 6526720812352214390L;
 
-	private Integer statusCode;
+	private String statusCode;
 
 	private String message;
 
-	public AuthorizationException(Integer statusCode, String message) {
+	public AuthorizationException(String statusCode, String message) {
 		super(message);
 		this.statusCode = statusCode;
 		this.message = message;
@@ -28,17 +28,17 @@ public class AuthorizationException extends RuntimeException {
 	 * @param message    异常信息
 	 * @param cause      异常原因
 	 */
-	public AuthorizationException(Integer statusCode, String message, Throwable cause) {
+	public AuthorizationException(String statusCode, String message, Throwable cause) {
 		super(message, cause);
 		this.statusCode = statusCode;
 		this.message = message;
 	}
 
-	public Integer getStatusCode() {
+	public String getStatusCode() {
 		return statusCode;
 	}
 
-	public void setStatusCode(Integer statusCode) {
+	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
 	}
 

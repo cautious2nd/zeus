@@ -12,42 +12,42 @@ public class BusinessException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 6989132002309456527L;
 
-	private Integer statusCode;
+	private String statusCode;
 
 	private String message;
 
 	private Object resultData;
 
-	public BusinessException(Integer statusCode, String message) {
+	public BusinessException(String statusCode, String message) {
 		super(message);
 		this.statusCode = statusCode;
 		this.message = message;
 	}
 
-	public BusinessException(Integer statusCode, String message, Throwable throwable) {
+	public BusinessException(String statusCode, String message, Throwable throwable) {
 		super(message, throwable);
 		this.statusCode = statusCode;
 		this.message = message;
 	}
 
-	public BusinessException(Integer statusCode, String message, Object resultData) {
+	public BusinessException(String statusCode, String message, Object resultData) {
 		this.statusCode = statusCode;
 		this.message = message;
 		this.resultData = resultData;
 	}
 
-	public BusinessException(Integer statusCode, String message, Object resultData, Throwable cause) {
+	public BusinessException(String statusCode, String message, Object resultData, Throwable cause) {
 		super(cause);
 		this.statusCode = statusCode;
 		this.message = message;
 		this.resultData = resultData;
 	}
 
-	public Integer getStatusCode() {
+	public String getStatusCode() {
 		return statusCode;
 	}
 
-	public void setStatusCode(Integer statusCode) {
+	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
 	}
 

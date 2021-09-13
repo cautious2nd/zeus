@@ -29,11 +29,10 @@
 
 		<scaffold-common.version>0.0.1-SNAPSHOT</scaffold-common.version>
 		<scaffold-logger.version>0.0.1-SNAPSHOT</scaffold-logger.version>
-		<scaffold-exception.version>0.0.1-SNAPSHOT
-		</scaffold-exception.version>
+		<scaffold-exception.version>0.0.1-SNAPSHOT</scaffold-exception.version>
 		<scaffold-minio.version>0.0.1-SNAPSHOT</scaffold-minio.version>
-		<scaffold-feign-jaxrs.version>0.0.1-SNAPSHOT
-		</scaffold-feign-jaxrs.version>
+		<scaffold-feign.version>0.0.1-SNAPSHOT
+		</scaffold-feign.version>
 		<scaffold-resteasy.version>0.0.1-SNAPSHOT</scaffold-resteasy.version>
 		<scaffold-swagger-ui.version>0.0.1-SNAPSHOT
 		</scaffold-swagger-ui.version>
@@ -85,6 +84,12 @@
 				<groupId>com.wisdom</groupId>
 				<artifactId>scaffold-common</artifactId>
 				<version>${scaffold-common.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.wisdom</groupId>
+				<artifactId>scaffold-feign</artifactId>
+				<version>${scaffold-feign.version}</version>
 			</dependency>
 
 			<dependency>

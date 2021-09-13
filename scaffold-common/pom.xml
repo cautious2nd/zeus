@@ -6,17 +6,33 @@
 	<modelVersion>4.0.0</modelVersion>
 
 
-  <parent>
-    <groupId>com.wisdom</groupId>
-    <artifactId>scaffold-dependencies</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../scaffold-dependencies</relativePath>
-  </parent>
+	<parent>
+		<groupId>com.wisdom</groupId>
+		<artifactId>scaffold-dependencies</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../scaffold-dependencies</relativePath>
+	</parent>
 
-  <groupId>com.wisdom</groupId>
-  <artifactId>scaffold-common</artifactId>
-  <packaging>jar</packaging>
+	<groupId>com.wisdom</groupId>
+	<artifactId>scaffold-common</artifactId>
+	<packaging>jar</packaging>
 
-  <name>scaffold-common</name>
-  <description>scaffold-common</description>
+	<name>scaffold-common</name>
+	<description>scaffold-common</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+
+		<!-- <dependency> <groupId>com.auth0</groupId> <artifactId>java-jwt</artifactId> 
+			<version>3.18.1</version> </dependency> -->
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-security</artifactId>
+		</dependency>
+	</dependencies>
+
 </project>
