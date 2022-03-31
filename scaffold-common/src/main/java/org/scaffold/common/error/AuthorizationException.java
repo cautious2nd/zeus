@@ -6,6 +6,9 @@
 **/
 package org.scaffold.common.error;
 
+import org.scaffold.common.annotation.HttpStatusAnnotation;
+
+@HttpStatusAnnotation(401)
 public class AuthorizationException extends RuntimeException {
 
 	/**
@@ -16,6 +19,11 @@ public class AuthorizationException extends RuntimeException {
 	private String statusCode;
 
 	private String message;
+
+	public AuthorizationException(String message) {
+		super(message);
+		this.message = message;
+	}
 
 	public AuthorizationException(String statusCode, String message) {
 		super(message);

@@ -7,11 +7,14 @@
 package org.scaffold.common.json;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IGsonUtils {
 	public String toJson(Object object);
 
 	public <T> T readValue(String json, Class<T> clazz);
+
+	public <T, V> Map<T, V> readValueToMap(String json, Class<T> key, Class<V> value);
 
 	public <T> List<T> readValueToList(String json, Class<T> clazz);
 }
