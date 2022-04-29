@@ -6,9 +6,14 @@
 **/
 package org.scaffold.common.security.auth;
 
+import java.util.List;
+
 public class BusinessAuthenticationEntity {
 	private String originData;
-	private String authData;
+	private String managerNo;
+	private String managerName;
+	private List<String> roles;
+	private List<String> depts;
 
 	public String getOriginData() {
 		return originData;
@@ -18,12 +23,36 @@ public class BusinessAuthenticationEntity {
 		this.originData = originData;
 	}
 
-	public String getAuthData() {
-		return authData;
+	public String getManagerNo() {
+		return managerNo;
 	}
 
-	public void setAuthData(String authData) {
-		this.authData = authData;
+	public void setManagerNo(String managerNo) {
+		this.managerNo = managerNo;
+	}
+
+	public String getManagerName() {
+		return managerName;
+	}
+
+	public void setManagerName(String managerName) {
+		this.managerName = managerName;
+	}
+
+	public List<String> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}
+
+	public List<String> getDepts() {
+		return depts;
+	}
+
+	public void setDepts(List<String> depts) {
+		this.depts = depts;
 	}
 
 }
