@@ -16,10 +16,12 @@ public abstract class ScaffoldErrorDecoder extends ErrorDecoder.Default {
 
 	protected static final Logger logger = LoggerFactory.getLogger(ScaffoldErrorDecoder.class);
 
-	public abstract Exception errorHandler(String methodKey, Response response) throws RuntimeException;
+	public abstract Exception errorHandler(String methodKey, Response response);
 
 	@Override
 	public Exception decode(String methodKey, Response response) {
+
+//		Exception e = super.decode(methodKey, response);
 
 		return errorHandler(methodKey, response);
 	}

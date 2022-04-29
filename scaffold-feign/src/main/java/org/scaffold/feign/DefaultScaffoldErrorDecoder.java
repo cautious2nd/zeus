@@ -7,9 +7,9 @@
 package org.scaffold.feign;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import org.scaffold.common.error.AuthorizationException;
-import org.scaffold.common.error.BusinessException;
 
 import feign.Response;
 import feign.Util;
@@ -17,26 +17,21 @@ import feign.Util;
 public class DefaultScaffoldErrorDecoder extends ScaffoldErrorDecoder {
 
 	@Override
-	public Exception errorHandler(String methodKey, Response response) throws RuntimeException {
+	public Exception errorHandler(String methodKey, Response response) {
+		byte[] body = {};
 		try {
-			if (null != response.body()) {
-
-				String resultStr = Util.toString(response.body().asReader(Util.UTF_8));
-
-				logger.warn("feign invoker caused an exception: [{}]", response.status());
-
-				int status = response.status();
-				if (status >= 500) {
-					throw new BusinessException(String.valueOf(status), resultStr);
-				} else if (status == 403) {
-					throw new AuthorizationException(resultStr);
-				} else if (status >= 400) {
-					throw new BusinessException(String.valueOf(status), resultStr);
+			if (response.body() != null) {
+				body = Util.toByteArray(response.body().asInputStream());
+				if (null != body) {
+					String resultStr = new String(body, Charset.forName("UTF-8"));
+					logger.warn("feign invoker caused an exception: [{}]", response.status());
+					return new AuthorizationException(resultStr);
 				}
 			}
-		} catch (IOException e) {
+		} catch (IOException ignored) { // NOPMD
 		}
-		return super.decode(methodKey, response);
+
+		return new AuthorizationException(response.request().url());
 	}
 
 }
