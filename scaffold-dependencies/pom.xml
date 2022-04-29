@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.wisdom</groupId>
 	<artifactId>scaffold-dependencies</artifactId>
@@ -16,7 +16,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.3.12.RELEASE</version>
-		<relativePath />
+		<relativePath/>
 	</parent>
 
 	<properties>
@@ -31,24 +31,18 @@
 		<scaffold-logger.version>0.0.1-SNAPSHOT</scaffold-logger.version>
 		<scaffold-exception.version>0.0.1-SNAPSHOT</scaffold-exception.version>
 		<scaffold-minio.version>0.0.1-SNAPSHOT</scaffold-minio.version>
-		<scaffold-feign.version>0.0.1-SNAPSHOT
-		</scaffold-feign.version>
+		<scaffold-feign.version>0.0.1-SNAPSHOT</scaffold-feign.version>
 		<scaffold-resteasy.version>0.0.1-SNAPSHOT</scaffold-resteasy.version>
-		<scaffold-swagger-ui.version>0.0.1-SNAPSHOT
-		</scaffold-swagger-ui.version>
+		<scaffold-swagger-ui.version>0.0.1-SNAPSHOT</scaffold-swagger-ui.version>
 		<scaffold-cache.version>0.0.1-SNAPSHOT</scaffold-cache.version>
 		<scaffold-session.version>0.0.1-SNAPSHOT</scaffold-session.version>
+		<scaffold-mybatis.version>0.0.1-SNAPSHOT</scaffold-mybatis.version>
 
 		<!-- apache commons version -->
 		<collections4.version>4.4</collections4.version>
 		<math3.version>3.6.1</math3.version>
 
-		<spring-cloud-dependencies.version>Hoxton.SR12
-		</spring-cloud-dependencies.version>
-
-
-
-
+		<spring-cloud-dependencies.version>Hoxton.SR12 </spring-cloud-dependencies.version>
 
 
 		<!-- maven plugins -->
@@ -75,7 +69,6 @@
 			</dependency>
 
 
-
 			<dependency>
 				<groupId>com.wisdom</groupId>
 				<artifactId>scaffold-common</artifactId>
@@ -94,10 +87,15 @@
 				<version>${scaffold-logger.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>com.wisdom</groupId>
+				<artifactId>scaffold-mybatis</artifactId>
+				<version>${scaffold-mybatis.version}</version>
+			</dependency>
+
+
 		</dependencies>
 	</dependencyManagement>
-
-
 
 
 	<build>
@@ -171,7 +169,8 @@
 						<reportOutputDirectory>javadocs</reportOutputDirectory>
 						<charset>${project.build.sourceEncoding}</charset>
 						<encoding>${project.build.sourceEncoding}</encoding>
-						<docencoding>${project.build.sourceEncoding}</docencoding>
+						<docencoding>${project.build.sourceEncoding}
+						</docencoding>
 						<tags>
 							<tag>
 								<name>Company</name>
@@ -214,8 +213,8 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
-			<!--<plugin> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-maven-plugin</artifactId> 
-				</plugin> -->
+			<!--<plugin> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-maven-plugin</artifactId>
+                </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
