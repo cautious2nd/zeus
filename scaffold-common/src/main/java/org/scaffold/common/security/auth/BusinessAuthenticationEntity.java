@@ -10,7 +10,7 @@ import java.util.List;
 
 public class BusinessAuthenticationEntity {
 	private String originData;
-	private String managerNo;
+	private Long managerId;
 	private String managerName;
 	private List<String> roles;
 	private List<String> depts;
@@ -23,12 +23,12 @@ public class BusinessAuthenticationEntity {
 		this.originData = originData;
 	}
 
-	public String getManagerNo() {
-		return managerNo;
+	public Long getManagerId() {
+		return managerId;
 	}
 
-	public void setManagerNo(String managerNo) {
-		this.managerNo = managerNo;
+	public void setManagerId(Long managerId) {
+		this.managerId = managerId;
 	}
 
 	public String getManagerName() {
