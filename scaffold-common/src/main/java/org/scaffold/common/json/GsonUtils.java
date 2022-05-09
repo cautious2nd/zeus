@@ -8,6 +8,7 @@ package org.scaffold.common.json;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -33,6 +34,14 @@ public class GsonUtils implements IGsonUtils {
 	public <T> T readValue(String json, Class<T> clazz) {
 		Gson gson = new Gson();
 		return gson.fromJson(json, clazz);
+	}
+
+	@Override
+	public <T, V> Map<T, V> readValueToMap(String json, Class<T> key, Class<V> value) {
+		Gson gson = new Gson();
+		Type type = new TypeToken<Map<T, V>>() {
+		}.getType();
+		return gson.fromJson(json, type);
 	}
 
 	@Override

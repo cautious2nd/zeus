@@ -10,7 +10,8 @@
 		<module>scaffold-common</module>
 		<module>scaffold-logger</module>
 		<module>scaffold-feign</module>
-    <module>scaffold-cache</module>
+        <module>scaffold-cache</module>
+		<module>scaffold-mybatis</module>
   </modules>
 
 
