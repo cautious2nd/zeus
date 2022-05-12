@@ -50,6 +50,15 @@ public class PageInfo<T> extends PageSerializable<T> {
      * 每页的数量
      */
     private int pageSize;
+
+    /**
+     * 每页的数量
+     */
+    private int pageNo;
+
+    private int pageCurrent;
+
+    private long totalRow;
     /**
      * 当前页的数量
      */
@@ -160,6 +169,9 @@ public class PageInfo<T> extends PageSerializable<T> {
         if (list instanceof Collection) {
             calcByNavigatePages(navigatePages);
         }
+        this.pageNo=this.pageNum;
+        this.pageCurrent=this.pageNum;
+        this.totalRow=this.total;
     }
 
     public static <T> PageInfo<T> of(List<T> list) {
@@ -386,15 +398,42 @@ public class PageInfo<T> extends PageSerializable<T> {
         this.navigateLastPage = navigateLastPage;
     }
 
+    public int getPageNo() {
+        return pageNo;
+    }
+
+    public long getTotalRow() {
+        return totalRow;
+    }
+
+    public void setTotalRow(long totalRow) {
+        this.totalRow = totalRow;
+    }
+
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public int getPageCurrent() {
+        return pageCurrent;
+    }
+
+    public void setPageCurrent(int pageCurrent) {
+        this.pageCurrent = pageCurrent;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("PageInfo{");
         sb.append("pageNum=").append(pageNum);
         sb.append(", pageSize=").append(pageSize);
+        sb.append(", pageNo=").append(pageNum);
         sb.append(", size=").append(size);
         sb.append(", startRow=").append(startRow);
         sb.append(", endRow=").append(endRow);
         sb.append(", total=").append(total);
+        sb.append(", totalRow=").append(totalRow);
+        sb.append(", pageCurrent=").append(pageCurrent);
         sb.append(", pages=").append(pages);
         sb.append(", list=").append(list);
         sb.append(", prePage=").append(prePage);

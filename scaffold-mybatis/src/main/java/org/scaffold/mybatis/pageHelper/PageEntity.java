@@ -20,6 +20,12 @@ public class PageEntity implements Serializable {
      */
     @XMLReflectionIgnore
     private int pageNum=1;
+
+    /**
+     * 页码，从1开始
+     */
+    @XMLReflectionIgnore
+    private int pageNo=1;
     /**
      * 页面大小
      */
@@ -80,5 +86,14 @@ public class PageEntity implements Serializable {
 
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
+    }
+
+    public int getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
+        this.pageNum=pageNo;
     }
 }

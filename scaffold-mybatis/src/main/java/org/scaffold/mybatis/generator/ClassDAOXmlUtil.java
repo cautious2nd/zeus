@@ -528,7 +528,8 @@ public class ClassDAOXmlUtil {
 			}
 			sb.append("</where>");
 		} else {
-			throw new Exception("生成update语句无主键,存在隐患....");
+			throw new Exception("生成update语句" +
+					"无主键,存在隐患....");
 		}
 		sb.append("\n");
 		sb.append("</update>");
