@@ -1,5 +1,6 @@
 package org.scaffold.mybatis.pageHelper;
 
+import org.scaffold.mybatis.generator.MongoReflectionIgnore;
 import org.scaffold.mybatis.generator.XMLReflectionIgnore;
 
 import java.io.Serializable;
@@ -13,39 +14,61 @@ import java.io.Serializable;
  */
 public class PageEntity implements Serializable {
     @XMLReflectionIgnore
+    @MongoReflectionIgnore
     private static final long serialVersionUID = 1L;
 
     /**
      * 页码，从1开始
      */
     @XMLReflectionIgnore
+    @MongoReflectionIgnore
     private int pageNum=1;
 
     /**
      * 页码，从1开始
      */
     @XMLReflectionIgnore
+    @MongoReflectionIgnore
     private int pageNo=1;
+
+    /**
+     * 页码，从1开始
+     */
+    @XMLReflectionIgnore
+    @MongoReflectionIgnore
+    private int pageCurrent=1;
     /**
      * 页面大小
      */
     @XMLReflectionIgnore
+    @MongoReflectionIgnore
     private int pageSize=20;
     /**
      * 分页合理化,null时用默认配置
      */
     @XMLReflectionIgnore
+    @MongoReflectionIgnore
     private Boolean reasonable;
     /**
      * true且pageSize=0时返回全部结果，false时分页,null时用默认配置
      */
     @XMLReflectionIgnore
+    @MongoReflectionIgnore
     private Boolean pageSizeZero;
     /**
      * 排序字段 为null则默认排序
      */
     @XMLReflectionIgnore
+    @MongoReflectionIgnore
     private String orderBy;
+
+    @XMLReflectionIgnore
+    @MongoReflectionIgnore
+    private int total;
+
+    @XMLReflectionIgnore
+    @MongoReflectionIgnore
+    private int totalRow;
 
     public void setPageNum(int pageNum) {
         this.pageNum = pageNum;
@@ -95,5 +118,30 @@ public class PageEntity implements Serializable {
     public void setPageNo(int pageNo) {
         this.pageNo = pageNo;
         this.pageNum=pageNo;
+    }
+
+    public int getPageCurrent() {
+        return pageCurrent;
+    }
+
+    public void setPageCurrent(int pageCurrent) {
+        this.pageCurrent = pageCurrent;
+        this.pageNum=pageCurrent;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public int getTotalRow() {
+        return totalRow;
+    }
+
+    public void setTotalRow(int totalRow) {
+        this.totalRow = totalRow;
     }
 }

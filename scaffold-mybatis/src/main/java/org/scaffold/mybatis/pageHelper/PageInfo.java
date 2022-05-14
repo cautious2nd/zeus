@@ -41,7 +41,8 @@ import java.util.List;
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class PageInfo<T> extends PageSerializable<T> {
     public static final int DEFAULT_NAVIGATE_PAGES = 8;
-    public static final PageInfo EMPTY = new PageInfo(Collections.emptyList(), 0);
+    public static final PageInfo EMPTY =
+            new PageInfo(Collections.emptyList() ,new PageEntity(), 0);
     /**
      * 当前页
      */
@@ -129,8 +130,8 @@ public class PageInfo<T> extends PageSerializable<T> {
      *
      * @param list
      */
-    public PageInfo(List<T> list) {
-        this(list, DEFAULT_NAVIGATE_PAGES);
+    public PageInfo(List<T> list,PageEntity pageEntity) {
+        this(list,pageEntity, DEFAULT_NAVIGATE_PAGES);
     }
 
     /**
@@ -139,7 +140,7 @@ public class PageInfo<T> extends PageSerializable<T> {
      * @param list          page结果
      * @param navigatePages 页码数量
      */
-    public PageInfo(List<T> list, int navigatePages) {
+    public PageInfo(List<T> list,PageEntity pageEntity, int navigatePages) {
         super(list);
         if (list instanceof Page) {
             Page page = (Page) list;
@@ -158,6 +159,7 @@ public class PageInfo<T> extends PageSerializable<T> {
                 this.endRow = this.startRow - 1 + this.size;
             }
         } else if (list instanceof Collection) {
+            if(list.size()<1){
             this.pageNum = 1;
             this.pageSize = list.size();
 
@@ -165,6 +167,16 @@ public class PageInfo<T> extends PageSerializable<T> {
             this.size = list.size();
             this.startRow = 0;
             this.endRow = list.size() > 0 ? list.size() - 1 : 0;
+            }else{
+                this.pageNum = pageEntity.getPageNum();
+                this.pageSize = pageEntity.getPageSize();
+
+                this.pages = this.pageSize > 0 ? 1 : 0;
+                this.size = list.size();
+                this.total=pageEntity.getTotal();
+                this.startRow = 0;
+                this.endRow = list.size() > 0 ? list.size() - 1 : 0;
+            }
         }
         if (list instanceof Collection) {
             calcByNavigatePages(navigatePages);
@@ -174,12 +186,14 @@ public class PageInfo<T> extends PageSerializable<T> {
         this.totalRow=this.total;
     }
 
-    public static <T> PageInfo<T> of(List<T> list) {
-        return new PageInfo<T>(list);
+
+    public static <T> PageInfo<T> of(List<T> list,PageEntity pageEntity) {
+        return new PageInfo<T>(list,pageEntity);
     }
 
-    public static <T> PageInfo<T> of(List<T> list, int navigatePages) {
-        return new PageInfo<T>(list, navigatePages);
+    public static <T> PageInfo<T> of(List<T> list,PageEntity pageEntity,
+                                     int navigatePages) {
+        return new PageInfo<T>(list, pageEntity,navigatePages);
     }
 
     /**
