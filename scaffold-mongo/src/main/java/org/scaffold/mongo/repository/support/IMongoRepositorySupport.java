@@ -54,7 +54,7 @@ public interface IMongoRepositorySupport {
 		return String.join(separatorChar, mon, (String) AnnotationUtils.getAnnotationValue(clazz,
 				org.springframework.data.mongodb.core.mapping.Document.class, "collection"));
 	}
-	
+
 	default BulkWriteResult bulkWrite(List<WriteModel<Document>> entitys, String mon) {
 		return getMongoCollection(getCollectionName(mon)).bulkWrite(entitys);
 	}
@@ -66,6 +66,14 @@ public interface IMongoRepositorySupport {
 			requests.add(insertOneModel);
 		});
 		return requests;
+	}
+
+	default long deleteMany(String mon, MongoDeleteFilter filter) {
+		MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
+		DeleteResult deleteResult = collection.deleteMany(filter.filter());
+		SCAFFOLD_LOGGER.info(collection.getNamespace().getFullName() + "::deleteMany::" + filter.filter().toString()
+				+ "====" + deleteResult.getDeletedCount());
+		return deleteResult.getDeletedCount();
 	}
 
 	default List<WriteModel<Document>> deleteMany(List<Document> documents, MongoDeleteFilter2 mongoDeleteFilter2) {
@@ -150,6 +158,114 @@ public interface IMongoRepositorySupport {
 			documents.add(Document.parse(GsonUtils.get().toJson(callBack.call(m))));
 		});
 		return documents;
+	}
+
+	default void insertMany(String collectionName, List<Document> documents) {
+		getMongoCollection(collectionName).insertMany(documents);
+	}
+
+	default List<String> findMany(String mon, MongoFindFilter filter) {
+		FindIterable<String> findIterable = getMongoCollection(getCollectionName(mon)).find(filter.filter(),
+				String.class);
+		MongoCursor<String> mongoCursor = findIterable.iterator();
+		List<String> result = new ArrayList<>();
+		while (mongoCursor.hasNext()) {
+			result.add(mongoCursor.next());
+		}
+		return result;
+	}
+
+	default <T> List<T> findManySort(String mon, MongoFindFilter filter, Class<T> clazz) {
+		MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
+		FindIterable<Document> findIterable = collection.find(filter.filter()).sort(filter.getSort());
+		MongoCursor<Document> mongoCursor = findIterable.iterator();
+		List<T> result = new ArrayList<>();
+		while (mongoCursor.hasNext()) {
+			Document document = mongoCursor.next();
+			result.add(GsonUtils.get().readValue(
+					document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), clazz));
+		}
+
+		SCAFFOLD_LOGGER.debug(collection.getNamespace().getFullName() + "::findMany::" + filter.filter().toString()
+				+ "====" + result.size());
+
+		return result;
+	}
+
+	default <T> List<T> findManyByPage(String mon, MongoFindFilter filter, Class<T> clazz) {
+		MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
+		FindIterable<Document> findIterable = null;
+		if (filter.getPage() != null && filter.getPage().getPageSize() != -1) {
+			findIterable = collection.find(filter.filter()).sort(filter.getSort())
+					.skip(Math.multiplyExact(filter.getPage().getPageSize(), filter.getPage().getPageCurrent() - 1))
+					.limit(filter.getPage().getPageSize());
+		} else {
+			findIterable = collection.find(filter.filter()).sort(filter.getSort());
+		}
+		long count = collection.countDocuments(filter.filter());
+		filter.getPage().setTotalRow((int) count);
+		MongoCursor<Document> mongoCursor = findIterable.iterator();
+		List<T> result = new ArrayList<>();
+		while (mongoCursor.hasNext()) {
+			Document document = mongoCursor.next();
+			result.add(GsonUtils.get().readValue(
+					document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), clazz));
+		}
+
+		SCAFFOLD_LOGGER.debug(collection.getNamespace().getFullName() + "::findManyByPage::"
+				+ filter.filter().toString() + "====" + result.size());
+		return result;
+	}
+
+	default <T> List<T> findMany(String mon, MongoFindFilter filter, Class<T> clazz) {
+		MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
+		FindIterable<Document> findIterable = collection.find(filter.filter());
+		MongoCursor<Document> mongoCursor = findIterable.iterator();
+		List<T> result = new ArrayList<>();
+		List<String> removeList = new ArrayList<>();
+		Field[] fields = ReflectUtil.getFields(clazz);
+		for (Field field : fields) {
+			if (field.isAnnotationPresent(MongoWriteIgnore.class)) {
+				removeList.add(field.getName());
+			}
+		}
+		while (mongoCursor.hasNext()) {
+			Document document = mongoCursor.next();
+			removeList.forEach(name -> {
+				document.remove(name);
+			});
+			String json = document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build());
+			result.add(GsonUtils.get().readValue(json, clazz));
+		}
+
+		SCAFFOLD_LOGGER.info(collection.getNamespace().getFullName() + "::findMany::" + filter.filter().toString()
+				+ "====" + result.size());
+		return result;
+	}
+
+	default long getCount(String mon, MongoFindFilter filter) {
+		MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
+		return collection.countDocuments(filter.filter());
+	}
+
+	default List<Document> aggregate(String mon, MongoAggregateFilter filter) {
+		MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
+		List<? extends Bson> pipeline = filter.getPipeline();
+
+		AggregateIterable<Document> aggregateIterable = collection.aggregate(pipeline);
+
+		MongoCursor<Document> mongoCursor = aggregateIterable.iterator();
+
+		List<Document> result = new ArrayList<>();
+		while (mongoCursor.hasNext()) {
+			Document document = mongoCursor.next();
+			result.add(document);
+		}
+
+		SCAFFOLD_LOGGER
+				.info(collection.getNamespace().getFullName() + ":aggregate:" + filter.info() + "====" + result.size());
+
+		return result;
 	}
 
 	interface MongoFindFilter {
@@ -287,122 +403,6 @@ public interface IMongoRepositorySupport {
 			return GsonUtils.get().toJson(getPipeline());
 		}
 
-	}
-
-	default void insertMany(String collectionName, List<Document> documents) {
-		getMongoCollection(collectionName).insertMany(documents);
-	}
-
-	default List<String> findMany(String collectionName, MongoFindFilter filter) {
-		FindIterable<String> findIterable = getMongoCollection(collectionName).find(filter.filter(), String.class);
-		MongoCursor<String> mongoCursor = findIterable.iterator();
-		List<String> result = new ArrayList<>();
-		while (mongoCursor.hasNext()) {
-			result.add(mongoCursor.next());
-		}
-		return result;
-	}
-
-	default <T> List<T> findManySort(String collectionName, MongoFindFilter filter, Class<T> clazz) {
-		MongoCollection<Document> collection = getMongoCollection(collectionName);
-		FindIterable<Document> findIterable = collection.find(filter.filter()).sort(filter.getSort());
-		MongoCursor<Document> mongoCursor = findIterable.iterator();
-		List<T> result = new ArrayList<>();
-		while (mongoCursor.hasNext()) {
-			Document document = mongoCursor.next();
-			result.add(GsonUtils.get().readValue(
-					document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), clazz));
-		}
-
-		SCAFFOLD_LOGGER.debug(collection.getNamespace().getFullName() + "::findMany::" + filter.filter().toString()
-				+ "====" + result.size());
-
-		return result;
-	}
-
-	default <T> List<T> findManyByPage(String collectionName, MongoFindFilter filter, Class<T> clazz) {
-		MongoCollection<Document> collection = getMongoCollection(collectionName);
-		FindIterable<Document> findIterable = null;
-		if (filter.getPage() != null && filter.getPage().getPageSize() != -1) {
-			findIterable = collection.find(filter.filter()).sort(filter.getSort())
-					.skip(Math.multiplyExact(filter.getPage().getPageSize(), filter.getPage().getPageCurrent() - 1))
-					.limit(filter.getPage().getPageSize());
-		} else {
-			findIterable = collection.find(filter.filter()).sort(filter.getSort());
-		}
-		long count = collection.countDocuments(filter.filter());
-		filter.getPage().setTotalRow((int) count);
-		MongoCursor<Document> mongoCursor = findIterable.iterator();
-		List<T> result = new ArrayList<>();
-		while (mongoCursor.hasNext()) {
-			Document document = mongoCursor.next();
-			result.add(GsonUtils.get().readValue(
-					document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), clazz));
-		}
-
-		SCAFFOLD_LOGGER.debug(collection.getNamespace().getFullName() + "::findManyByPage::"
-				+ filter.filter().toString() + "====" + result.size());
-		return result;
-	}
-
-	default <T> List<T> findMany(String collectionName, MongoFindFilter filter, Class<T> clazz) {
-		MongoCollection<Document> collection = getMongoCollection(collectionName);
-		FindIterable<Document> findIterable = collection.find(filter.filter());
-		MongoCursor<Document> mongoCursor = findIterable.iterator();
-		List<T> result = new ArrayList<>();
-		List<String> removeList = new ArrayList<>();
-		Field[] fields = ReflectUtil.getFields(clazz);
-		for (Field field : fields) {
-			if (field.isAnnotationPresent(MongoWriteIgnore.class)) {
-				removeList.add(field.getName());
-			}
-		}
-		while (mongoCursor.hasNext()) {
-			Document document = mongoCursor.next();
-			removeList.forEach(name -> {
-				document.remove(name);
-			});
-			String json = document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build());
-			result.add(GsonUtils.get().readValue(json, clazz));
-		}
-
-		SCAFFOLD_LOGGER.info(collection.getNamespace().getFullName() + "::findMany::" + filter.filter().toString()
-				+ "====" + result.size());
-		return result;
-	}
-
-	default long getCount(String collectionName, MongoFindFilter filter) {
-		MongoCollection<Document> collection = getMongoCollection(collectionName);
-		return collection.countDocuments(filter.filter());
-	}
-
-	default long deleteMany(String collectionName, MongoDeleteFilter filter) {
-		MongoCollection<Document> collection = getMongoCollection(collectionName);
-		DeleteResult deleteResult = collection.deleteMany(filter.filter());
-		SCAFFOLD_LOGGER.info(collection.getNamespace().getFullName() + "::deleteMany::" + filter.filter().toString()
-				+ "====" + deleteResult.getDeletedCount());
-
-		return deleteResult.getDeletedCount();
-	}
-
-	default List<Document> aggregate(String collectionName, MongoAggregateFilter filter) {
-		MongoCollection<Document> collection = getMongoCollection(collectionName);
-		List<? extends Bson> pipeline = filter.getPipeline();
-
-		AggregateIterable<Document> aggregateIterable = collection.aggregate(pipeline);
-
-		MongoCursor<Document> mongoCursor = aggregateIterable.iterator();
-
-		List<Document> result = new ArrayList<>();
-		while (mongoCursor.hasNext()) {
-			Document document = mongoCursor.next();
-			result.add(document);
-		}
-
-		SCAFFOLD_LOGGER
-				.info(collection.getNamespace().getFullName() + ":aggregate:" + filter.info() + "====" + result.size());
-
-		return result;
 	}
 
 	interface ToDocumentCallBack<T> {
