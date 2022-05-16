@@ -24,6 +24,8 @@
 
 package org.scaffold.mybatis.pageHelper;
 
+import org.scaffold.mybatis.generator.MongoReflectionIgnore;
+import org.scaffold.mybatis.generator.XMLReflectionIgnore;
 import org.scaffold.mybatis.pageHelper.page.PageAutoDialect;
 
 import java.io.Closeable;
@@ -44,6 +46,17 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * 页码，从1开始
      */
     private int pageNum;
+
+    /**
+     * 页码，从1开始
+     */
+    private int pageNo;
+
+    /**
+     * 页码，从1开始
+     */
+    private int pageCurrent;
+
     /**
      * 页面大小
      */
@@ -60,6 +73,11 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * 总数
      */
     private long total;
+
+    /**
+     * 总数
+     */
+    private long totalRow;
     /**
      * 总页数
      */
@@ -91,6 +109,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * sql拦截处理
      */
+
     private BoundSqlInterceptor boundSqlInterceptor;
     private transient BoundSqlInterceptor.Chain chain;
     /**
@@ -378,7 +397,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     public PageInfo<E> toPageInfo() {
-        return new PageInfo<E>(this);
+        return new PageInfo<E>(this,new PageEntity());
     }
 
     /**
@@ -393,7 +412,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         for (E e : this) {
             list.add(function.apply(e));
         }
-        PageInfo<T> pageInfo = new PageInfo<T>(list);
+        PageInfo<T> pageInfo = new PageInfo<T>(list,new PageEntity());
         pageInfo.setTotal(this.getTotal());
         pageInfo.setPageNum(this.getPageNum());
         pageInfo.setPageSize(this.getPageSize());
@@ -504,5 +523,29 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     @Override
     public void close() {
         PageHelper.clearPage();
+    }
+
+    public int getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public int getPageCurrent() {
+        return pageCurrent;
+    }
+
+    public void setPageCurrent(int pageCurrent) {
+        this.pageCurrent = pageCurrent;
+    }
+
+    public long getTotalRow() {
+        return totalRow;
+    }
+
+    public void setTotalRow(long totalRow) {
+        this.totalRow = totalRow;
     }
 }

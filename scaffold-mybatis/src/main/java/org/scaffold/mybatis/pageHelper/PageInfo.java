@@ -41,7 +41,8 @@ import java.util.List;
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class PageInfo<T> extends PageSerializable<T> {
     public static final int DEFAULT_NAVIGATE_PAGES = 8;
-    public static final PageInfo EMPTY = new PageInfo(Collections.emptyList(), 0);
+    public static final PageInfo EMPTY =
+            new PageInfo(Collections.emptyList() ,new PageEntity(), 0);
     /**
      * 当前页
      */
@@ -50,6 +51,15 @@ public class PageInfo<T> extends PageSerializable<T> {
      * 每页的数量
      */
     private int pageSize;
+
+    /**
+     * 每页的数量
+     */
+    private int pageNo;
+
+    private int pageCurrent;
+
+    private long totalRow;
     /**
      * 当前页的数量
      */
@@ -120,8 +130,8 @@ public class PageInfo<T> extends PageSerializable<T> {
      *
      * @param list
      */
-    public PageInfo(List<T> list) {
-        this(list, DEFAULT_NAVIGATE_PAGES);
+    public PageInfo(List<T> list,PageEntity pageEntity) {
+        this(list,pageEntity, DEFAULT_NAVIGATE_PAGES);
     }
 
     /**
@@ -130,7 +140,7 @@ public class PageInfo<T> extends PageSerializable<T> {
      * @param list          page结果
      * @param navigatePages 页码数量
      */
-    public PageInfo(List<T> list, int navigatePages) {
+    public PageInfo(List<T> list,PageEntity pageEntity, int navigatePages) {
         super(list);
         if (list instanceof Page) {
             Page page = (Page) list;
@@ -149,6 +159,7 @@ public class PageInfo<T> extends PageSerializable<T> {
                 this.endRow = this.startRow - 1 + this.size;
             }
         } else if (list instanceof Collection) {
+            if(list.size()<1){
             this.pageNum = 1;
             this.pageSize = list.size();
 
@@ -156,18 +167,33 @@ public class PageInfo<T> extends PageSerializable<T> {
             this.size = list.size();
             this.startRow = 0;
             this.endRow = list.size() > 0 ? list.size() - 1 : 0;
+            }else{
+                this.pageNum = pageEntity.getPageNum();
+                this.pageSize = pageEntity.getPageSize();
+
+                this.pages = this.pageSize > 0 ? 1 : 0;
+                this.size = list.size();
+                this.total=pageEntity.getTotal();
+                this.startRow = 0;
+                this.endRow = list.size() > 0 ? list.size() - 1 : 0;
+            }
         }
         if (list instanceof Collection) {
             calcByNavigatePages(navigatePages);
         }
+        this.pageNo=this.pageNum;
+        this.pageCurrent=this.pageNum;
+        this.totalRow=this.total;
     }
 
-    public static <T> PageInfo<T> of(List<T> list) {
-        return new PageInfo<T>(list);
+
+    public static <T> PageInfo<T> of(List<T> list,PageEntity pageEntity) {
+        return new PageInfo<T>(list,pageEntity);
     }
 
-    public static <T> PageInfo<T> of(List<T> list, int navigatePages) {
-        return new PageInfo<T>(list, navigatePages);
+    public static <T> PageInfo<T> of(List<T> list,PageEntity pageEntity,
+                                     int navigatePages) {
+        return new PageInfo<T>(list, pageEntity,navigatePages);
     }
 
     /**
@@ -386,15 +412,42 @@ public class PageInfo<T> extends PageSerializable<T> {
         this.navigateLastPage = navigateLastPage;
     }
 
+    public int getPageNo() {
+        return pageNo;
+    }
+
+    public long getTotalRow() {
+        return totalRow;
+    }
+
+    public void setTotalRow(long totalRow) {
+        this.totalRow = totalRow;
+    }
+
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public int getPageCurrent() {
+        return pageCurrent;
+    }
+
+    public void setPageCurrent(int pageCurrent) {
+        this.pageCurrent = pageCurrent;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("PageInfo{");
         sb.append("pageNum=").append(pageNum);
         sb.append(", pageSize=").append(pageSize);
+        sb.append(", pageNo=").append(pageNum);
         sb.append(", size=").append(size);
         sb.append(", startRow=").append(startRow);
         sb.append(", endRow=").append(endRow);
         sb.append(", total=").append(total);
+        sb.append(", totalRow=").append(totalRow);
+        sb.append(", pageCurrent=").append(pageCurrent);
         sb.append(", pages=").append(pages);
         sb.append(", list=").append(list);
         sb.append(", prePage=").append(prePage);

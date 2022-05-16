@@ -12,6 +12,7 @@
 		<module>scaffold-feign</module>
         <module>scaffold-cache</module>
 		<module>scaffold-mybatis</module>
+    <module>scaffold-mongo</module>
   </modules>
 
 
