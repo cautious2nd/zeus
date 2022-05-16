@@ -37,6 +37,8 @@
 		<scaffold-cache.version>0.0.1-SNAPSHOT</scaffold-cache.version>
 		<scaffold-session.version>0.0.1-SNAPSHOT</scaffold-session.version>
 		<scaffold-mybatis.version>0.0.1-SNAPSHOT</scaffold-mybatis.version>
+		<scaffold-mongo.version>0.0.1-SNAPSHOT</scaffold-mongo.version>
+		
 
 		<!-- apache commons version -->
 		<collections4.version>4.4</collections4.version>
@@ -85,6 +87,12 @@
 				<groupId>com.wisdom</groupId>
 				<artifactId>scaffold-logger</artifactId>
 				<version>${scaffold-logger.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.wisdom</groupId>
+				<artifactId>scaffold-mongo</artifactId>
+				<version>${scaffold-mongo.version}</version>
 			</dependency>
 
 			<dependency>
