@@ -47,6 +47,12 @@
             <version>1.2.9</version>
         </dependency>
 
+        <!--aop starter-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
         <!--分布式事务依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
