@@ -67,6 +67,10 @@ public class DataSourceFactory {
     public DataSource dataSourceMaster(DataSource druidDataSourceMaster) {
         AtomikosDataSourceBean sourceBean = new AtomikosDataSourceBean();
         sourceBean.setXaDataSource((DruidXADataSource) druidDataSourceMaster);
+        sourceBean.setMaxPoolSize(((DruidXADataSource) druidDataSourceMaster).getMaxActive());
+        sourceBean.setMinPoolSize(((DruidXADataSource) druidDataSourceMaster).getMinIdle());
+        sourceBean.setMaxLifetime((int)((DruidXADataSource) druidDataSourceMaster).getMaxWait());
+        sourceBean.setTestQuery(((DruidXADataSource) druidDataSourceMaster).getValidationQuery());
         // 必须为数据源指定唯一标识
         sourceBean.setUniqueResourceName("master");
         return sourceBean;
@@ -79,6 +83,10 @@ public class DataSourceFactory {
     public DataSource dataSourceSlave1(DataSource druidDataSourceSlave1) {
         AtomikosDataSourceBean sourceBean = new AtomikosDataSourceBean();
         sourceBean.setXaDataSource((DruidXADataSource) druidDataSourceSlave1);
+        sourceBean.setMaxPoolSize(((DruidXADataSource) druidDataSourceSlave1).getMaxActive());
+        sourceBean.setMinPoolSize(((DruidXADataSource) druidDataSourceSlave1).getMinIdle());
+        sourceBean.setMaxLifetime((int)((DruidXADataSource) druidDataSourceSlave1).getMaxWait());
+        sourceBean.setTestQuery(((DruidXADataSource) druidDataSourceSlave1).getValidationQuery());
         sourceBean.setUniqueResourceName("slave1");
         return sourceBean;
     }
@@ -89,6 +97,10 @@ public class DataSourceFactory {
     @Bean
     public DataSource dataSourceSlave2(DataSource druidDataSourceSlave2) {
         AtomikosDataSourceBean sourceBean = new AtomikosDataSourceBean();
+        sourceBean.setMaxPoolSize(((DruidXADataSource) druidDataSourceSlave2).getMaxActive());
+        sourceBean.setMinPoolSize(((DruidXADataSource) druidDataSourceSlave2).getMinIdle());
+        sourceBean.setMaxLifetime((int)((DruidXADataSource) druidDataSourceSlave2).getMaxWait());
+        sourceBean.setTestQuery(((DruidXADataSource) druidDataSourceSlave2).getValidationQuery());
         sourceBean.setXaDataSource((DruidXADataSource) druidDataSourceSlave2);
         sourceBean.setUniqueResourceName("slave2");
         return sourceBean;
