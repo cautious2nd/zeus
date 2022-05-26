@@ -15,6 +15,7 @@ public class BusinessAuthenticationEntity {
 	private String managerName;
 	private List<String> roles;
 	private List<String> depts;
+	private List<String> companys;
 
 	public String getManagerNo() {
 		return managerNo;
@@ -62,6 +63,14 @@ public class BusinessAuthenticationEntity {
 
 	public void setDepts(List<String> depts) {
 		this.depts = depts;
+	}
+
+	public List<String> getCompanys() {
+		return companys;
+	}
+
+	public void setCompanys(List<String> companys) {
+		this.companys = companys;
 	}
 
 }
