@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 public class GsonUtils implements IGsonUtils {
@@ -26,19 +27,19 @@ public class GsonUtils implements IGsonUtils {
 
 	@Override
 	public String toJson(Object object) {
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 		return gson.toJson(object);
 	}
 
 	@Override
 	public <T> T readValue(String json, Class<T> clazz) {
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 		return gson.fromJson(json, clazz);
 	}
 
 	@Override
 	public <T, V> Map<T, V> readValueToMap(String json, Class<T> key, Class<V> value) {
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 		Type type = new TypeToken<Map<T, V>>() {
 		}.getType();
 		return gson.fromJson(json, type);
@@ -47,7 +48,7 @@ public class GsonUtils implements IGsonUtils {
 	@Override
 	public <T> List<T> readValueToList(String json, Class<T> clazz) {
 		Type typeOfT = TypeToken.getParameterized(List.class, clazz).getType();
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 		return gson.fromJson(json, typeOfT);
 	}
 

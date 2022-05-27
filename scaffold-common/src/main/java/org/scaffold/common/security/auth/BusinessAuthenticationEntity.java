@@ -11,9 +11,19 @@ import java.util.List;
 public class BusinessAuthenticationEntity {
 	private String originData;
 	private Long managerId;
+	private String managerNo;
 	private String managerName;
 	private List<String> roles;
 	private List<String> depts;
+	private List<String> companys;
+
+	public String getManagerNo() {
+		return managerNo;
+	}
+
+	public void setManagerNo(String managerNo) {
+		this.managerNo = managerNo;
+	}
 
 	public String getOriginData() {
 		return originData;
@@ -53,6 +63,14 @@ public class BusinessAuthenticationEntity {
 
 	public void setDepts(List<String> depts) {
 		this.depts = depts;
+	}
+
+	public List<String> getCompanys() {
+		return companys;
+	}
+
+	public void setCompanys(List<String> companys) {
+		this.companys = companys;
 	}
 
 }
