@@ -87,7 +87,14 @@ public class PageInterceptor implements Interceptor {
             MappedStatement ms = (MappedStatement) args[0];
             Object parameter = args[1];
             if (parameter instanceof PageEntity) {
+                Integer pageNO = ((PageEntity) parameter).getPageNo();
+                Integer pageCurrent = ((PageEntity) parameter).getPageCurrent();
                 Integer pageNum = ((PageEntity) parameter).getPageNum();
+                if (pageNO!=1){
+                    pageNum=pageNO;
+                }else if(pageCurrent!=1){
+                    pageNum=pageCurrent;
+                }
                 Integer pageSize = ((PageEntity) parameter).getPageSize();
                 Boolean reasonable = ((PageEntity) parameter).getReasonable();
                 Boolean pageSizeZero =

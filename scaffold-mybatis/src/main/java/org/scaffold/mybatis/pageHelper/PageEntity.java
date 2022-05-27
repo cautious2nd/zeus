@@ -117,7 +117,6 @@ public class PageEntity implements Serializable {
 
     public void setPageNo(int pageNo) {
         this.pageNo = pageNo;
-        this.pageNum=pageNo;
     }
 
     public int getPageCurrent() {
@@ -126,7 +125,6 @@ public class PageEntity implements Serializable {
 
     public void setPageCurrent(int pageCurrent) {
         this.pageCurrent = pageCurrent;
-        this.pageNum=pageCurrent;
     }
 
     public int getTotal() {
