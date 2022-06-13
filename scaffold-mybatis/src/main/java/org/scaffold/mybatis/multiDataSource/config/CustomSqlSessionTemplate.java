@@ -6,6 +6,7 @@ import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.*;
 import org.mybatis.spring.MyBatisExceptionTranslator;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.scaffold.mybatis.multiDataSource.constant.DBConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
@@ -78,6 +79,9 @@ public class CustomSqlSessionTemplate extends SqlSessionTemplate {
     @Override
     public SqlSessionFactory getSqlSessionFactory() {
         String dataSourceKey = DataSourceContextHolder.getDataSourceKey();
+        if(dataSourceKey==null){
+            dataSourceKey= DBConstant.MASTER;
+        }
         logger.info("当前会话工厂 : {}", dataSourceKey);
         SqlSessionFactory targetSqlSessionFactory = targetSqlSessionFactories.get(dataSourceKey);
         if (targetSqlSessionFactory != null) {

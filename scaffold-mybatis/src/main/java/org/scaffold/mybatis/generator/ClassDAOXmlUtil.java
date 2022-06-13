@@ -425,6 +425,15 @@ public class ClassDAOXmlUtil {
 					"\n" +
 					"    }");
 			sb.append("\n");
+
+			sb.append("    @Override");
+			sb.append("\n");
+			sb.append("    public int deleteBatch(List<"+domainName+"> vars) " +
+					"{\n" +
+					"        return "+Character.toLowerCase(mapperName.charAt(0))).append(mapperName.substring(1)+".deleteBatch(vars);\n" +
+					"\n" +
+					"    }");
+			sb.append("\n");
 			sb.append("}");
 
 
