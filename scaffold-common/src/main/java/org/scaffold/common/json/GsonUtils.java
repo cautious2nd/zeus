@@ -16,7 +16,12 @@ import com.google.gson.reflect.TypeToken;
 
 public class GsonUtils implements IGsonUtils {
 
-	private static GsonUtils GSON_UTILS = new GsonUtils();;
+	private static GsonUtils GSON_UTILS = new GsonUtils();
+
+	private final static Gson IGNORE_NULL_GOSN = new GsonBuilder()// 建造者模式设置不同的配置
+			.disableHtmlEscaping()// 防止对网址乱码 忽略对特殊字符的转换
+			.setDateFormat("yyyy-MM-dd HH:mm:ss") // 设置日期的格式
+			.create();
 
 	private GsonUtils() {
 	}
@@ -50,6 +55,11 @@ public class GsonUtils implements IGsonUtils {
 		Type typeOfT = TypeToken.getParameterized(List.class, clazz).getType();
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 		return gson.fromJson(json, typeOfT);
+	}
+
+	@Override
+	public String toJsonIgnoreNull(Object object) {
+		return IGNORE_NULL_GOSN.toJson(object);
 	}
 
 }

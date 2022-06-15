@@ -11,6 +11,8 @@ import java.util.Map;
 
 public interface IGsonUtils {
 	public String toJson(Object object);
+	
+	public String toJsonIgnoreNull(Object object);
 
 	public <T> T readValue(String json, Class<T> clazz);
 
