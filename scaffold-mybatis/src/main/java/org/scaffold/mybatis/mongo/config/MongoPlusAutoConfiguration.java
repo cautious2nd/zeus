@@ -11,6 +11,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
@@ -51,6 +53,11 @@ public class MongoPlusAutoConfiguration {
      * 连接地址（IP:端口）
      */
     private ArrayList<String> addresses;
+
+    /**
+     * 重写
+     */
+    private Boolean retryWrites=true;
 
     /**
      * 连接配置
@@ -99,6 +106,14 @@ public class MongoPlusAutoConfiguration {
         this.mongoOptionProperties = mongoOptionProperties;
     }
 
+    public Boolean getRetryWrites() {
+        return retryWrites;
+    }
+
+    public void setRetryWrites(Boolean retryWrites) {
+        this.retryWrites = retryWrites;
+    }
+
     /**
      * mongo工厂
      *
@@ -117,6 +132,7 @@ public class MongoPlusAutoConfiguration {
 
         MongoClientSettings.Builder mongoClientSettingBuilder =
                 MongoClientSettings.builder();
+        mongoClientSettingBuilder.retryWrites(retryWrites);
         mongoClientSettingBuilder.applyToClusterSettings(builderCluster -> builderCluster.hosts(serverAddressArrayList));
         mongoClientSettingBuilder.applyToConnectionPoolSettings(builder -> {
             builder.maxSize(mongoOptionProperties.getMaxConnectionPerHost());
@@ -160,5 +176,10 @@ public class MongoPlusAutoConfiguration {
             ((MappingMongoConverter)converter).setTypeMapper(new DefaultMongoTypeMapper(null));
         }
         return mongoTemplate ;
+    }
+
+    @Bean
+    MongoTransactionManager mongoTransactionManager(MongoDatabaseFactory mongoDatabaseFactory){
+        return new MongoTransactionManager(mongoDatabaseFactory);
     }
 }
