@@ -5,10 +5,7 @@
  **/
 package org.scaffold.mybatis.mongo.config;
 
-import com.mongodb.client.AggregateIterable;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
+import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
 import org.apache.commons.logging.Log;
@@ -46,11 +43,15 @@ public interface MongoDAOSupport {
         return documents;
     }
 
+    default <T> Document toDocument(T t, ToDocumentCallBack<T> callBack) {
+        return Document.parse(GsonUtils.get().toJsonIgnoreNull(callBack.call(t)));
+    }
+
     default <T> List<Document> toDocuments(List<T> list, ToDocumentCallBack<T> callBack) {
         List<Document> documents = new LinkedList<>();
         list.stream().forEach(m -> {
 //			documents.add(Document.parse(JSONUtil.toJsonString(callBack.call(m))));
-            documents.add(Document.parse(GsonUtils.get().toJson(callBack.call(m))));
+            documents.add(Document.parse(GsonUtils.get().toJsonIgnoreNull(callBack.call(m))));
         });
         return documents;
     }
@@ -58,7 +59,7 @@ public interface MongoDAOSupport {
     default <T> List<Document> toDocuments(Collection<T> list, ToDocumentCallBack<T> callBack) {
         List<Document> documents = new LinkedList<>();
         list.stream().forEach(m -> {
-            documents.add(Document.parse(GsonUtils.get().toJson(callBack.call(m))));
+            documents.add(Document.parse(GsonUtils.get().toJsonIgnoreNull(callBack.call(m))));
         });
         return documents;
     }
@@ -123,6 +124,33 @@ public interface MongoDAOSupport {
         return requests;
     }
 
+    default List<WriteModel<Document>> updateManyByOne(Document document,
+                                                       MongoUpdateFilter mongoUpdateFilter,
+                                                       boolean isUpsert) {
+        List<WriteModel<Document>> requests = new ArrayList<>();
+        Bson filter = mongoUpdateFilter.filter(document);
+        Bson update = mongoUpdateFilter.update(document);
+        UpdateManyModel<Document> updateManyModel = new UpdateManyModel<>(filter, update,
+                new UpdateOptions().upsert(isUpsert));
+
+        requests.add(updateManyModel);
+        return requests;
+    }
+
+    default List<WriteModel<Document>> unsetManyByOne(Document document,
+                                                      MongoUpdateFilter mongoUpdateFilter,
+                                                      boolean isUpsert) {
+        List<WriteModel<Document>> requests = new ArrayList<>();
+        Bson filter = mongoUpdateFilter.filter(document);
+        Bson update = mongoUpdateFilter.unUpdate(document);
+        UpdateManyModel<Document> updateManyModel = new UpdateManyModel<>(filter, update,
+                new UpdateOptions().upsert(isUpsert));
+
+        requests.add(updateManyModel);
+        return requests;
+    }
+
+
     default List<WriteModel<Document>> updateMany(List<Document> documents, MongoUpdateFilter mongoUpdateFilter,
                                                   boolean isUpsert, List<? extends Bson> arrayFilters) {
         List<WriteModel<Document>> requests = new ArrayList<>();
@@ -175,13 +203,13 @@ public interface MongoDAOSupport {
                                        String collectionName, MongoFindFilter filter, Class<T> clazz) {
         MongoCollection<Document> collection = mongoTemplate.getCollection(collectionName);
         FindIterable<Document> findIterable = null;
-        if (filter.getPageEntity() != null && filter.getPageEntity().getPageSize() != -1&& filter.getPageEntity().getPageSize() != 0) {
-            int pageNum=filter.getPageEntity().getPageNum();
-            if(pageNum<=0){
-                pageNum=filter.getPageEntity().getPageNo();
+        if (filter.getPageEntity() != null && filter.getPageEntity().getPageSize() != -1 && filter.getPageEntity().getPageSize() != 0) {
+            int pageNum = filter.getPageEntity().getPageNum();
+            if (filter.getPageEntity().getPageNo() != 1) {
+                pageNum = filter.getPageEntity().getPageNo();
             }
-            if(pageNum<=0){
-                pageNum=filter.getPageEntity().getPageCurrent();
+            if (filter.getPageEntity().getPageCurrent() != 1) {
+                pageNum = filter.getPageEntity().getPageCurrent();
             }
 
             findIterable = collection.find(filter.filter()).sort(filter.getSort())
@@ -236,6 +264,24 @@ public interface MongoDAOSupport {
                           MongoFindFilter filter) {
         MongoCollection<Document> collection = mongoTemplate.getCollection(collectionName);
         return collection.countDocuments(filter.filter());
+    }
+
+    default <T> List<T> getDistinct(MongoTemplate mongoTemplate,
+                                    String collectionName, String fieldName,
+                                    MongoFindFilter filter, Class<T> clazz) {
+        MongoCollection<Document> collection = mongoTemplate.getCollection(collectionName);
+        DistinctIterable<T> distinctIterable = collection.distinct(fieldName,
+                filter.filter(), clazz);
+        MongoCursor<T> mongoCursor = distinctIterable.iterator();
+        List<T> result = new ArrayList<>();
+        while (mongoCursor.hasNext()) {
+            T document = mongoCursor.next();
+            result.add(document);
+        }
+
+        logger.info(collection.getNamespace().getFullName() + "::getDistinct::" + filter.filter().toString() + "===="
+                + result.size());
+        return result;
     }
 
     default long deleteMany(MongoTemplate mongoTemplate, String collectionName, MongoDeleteFilter filter) {
@@ -317,6 +363,10 @@ public interface MongoDAOSupport {
             return new Document("$set", param);
         }
 
+        default Bson unUpdate(Document param) {
+            return new Document("$unset", param);
+        }
+
     }
 
     interface MongoDeleteFilter {
@@ -371,6 +421,7 @@ public interface MongoDAOSupport {
         default Bson getGraphLookup() {
             return new Document("$graphLookup", setGraphLookup());
         }
+
         @Override
         default List<? extends Bson> getPipeline() {
             List<Bson> pipeLine = new LinkedList<>();
