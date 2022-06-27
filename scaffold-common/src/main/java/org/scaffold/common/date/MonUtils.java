@@ -47,4 +47,12 @@ public class MonUtils {
 		}
 		return mons;
 	}
+	
+	public static int getMonthDays(int mon) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR, mon / 100);
+		calendar.set(Calendar.MONTH, mon % 100 - 1);
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+	}
 }
