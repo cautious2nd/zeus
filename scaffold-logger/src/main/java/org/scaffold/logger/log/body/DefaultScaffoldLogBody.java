@@ -7,6 +7,13 @@ public class DefaultScaffoldLogBody {
 	private String value;
 	private String remark;
 
+	public DefaultScaffoldLogBody(String type, String key, String value, String remark) {
+		this.type = type;
+		this.key = key;
+		this.value = value;
+		this.remark = remark;
+	}
+
 	public String getType() {
 		return type;
 	}
