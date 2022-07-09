@@ -9,7 +9,7 @@ package org.scaffold.feign;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import org.scaffold.common.error.AuthorizationException;
+import org.scaffold.common.error.ScaffoldFeignException;
 
 import feign.Response;
 import feign.Util;
@@ -25,13 +25,13 @@ public class DefaultScaffoldErrorDecoder extends ScaffoldErrorDecoder {
 				if (null != body) {
 					String resultStr = new String(body, Charset.forName("UTF-8"));
 					logger.warn("feign invoker caused an exception: [{}]", response.status());
-					return new AuthorizationException(resultStr);
+					return new ScaffoldFeignException(String.valueOf(response.status()), resultStr, methodKey);
 				}
 			}
 		} catch (IOException ignored) { // NOPMD
 		}
 
-		return new AuthorizationException(response.request().url());
+		return new ScaffoldFeignException(String.valueOf(response.status()), response.request().url(), methodKey);
 	}
 
 }
