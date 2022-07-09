@@ -1,9 +1,7 @@
 package org.scaffold.mybatis.multiDataSource.config;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.xa.DruidXADataSource;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
-import com.mysql.cj.jdbc.MysqlXADataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -20,6 +18,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
 
 /**
  * @author : heibaiying
@@ -44,7 +43,7 @@ public class DataSourceFactory {
      * 创建 DruidXADataSource 2
      */
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.druid.slave1",ignoreInvalidFields = true)
+    @ConfigurationProperties(prefix = "spring.datasource.druid.slave1", ignoreInvalidFields = true)
     public DataSource druidDataSourceSlave1() {
         return new DruidXADataSource();
     }
@@ -59,17 +58,16 @@ public class DataSourceFactory {
     }
 
 
-
     /**
      * 创建支持XA事务的Atomikos数据源1
      */
-    @Bean
+    @Bean("dataSourceMaster")
     public DataSource dataSourceMaster(DataSource druidDataSourceMaster) {
         AtomikosDataSourceBean sourceBean = new AtomikosDataSourceBean();
         sourceBean.setXaDataSource((DruidXADataSource) druidDataSourceMaster);
         sourceBean.setMaxPoolSize(((DruidXADataSource) druidDataSourceMaster).getMaxActive());
         sourceBean.setMinPoolSize(((DruidXADataSource) druidDataSourceMaster).getMinIdle());
-        sourceBean.setMaxLifetime((int)((DruidXADataSource) druidDataSourceMaster).getMaxWait());
+        sourceBean.setMaxLifetime((int) ((DruidXADataSource) druidDataSourceMaster).getMaxWait());
         sourceBean.setTestQuery(((DruidXADataSource) druidDataSourceMaster).getValidationQuery());
         // 必须为数据源指定唯一标识
         sourceBean.setUniqueResourceName("master");
@@ -79,13 +77,13 @@ public class DataSourceFactory {
     /**
      * 创建支持XA事务的Atomikos数据源2
      */
-    @Bean
+    @Bean("dataSourceSlave1")
     public DataSource dataSourceSlave1(DataSource druidDataSourceSlave1) {
         AtomikosDataSourceBean sourceBean = new AtomikosDataSourceBean();
         sourceBean.setXaDataSource((DruidXADataSource) druidDataSourceSlave1);
         sourceBean.setMaxPoolSize(((DruidXADataSource) druidDataSourceSlave1).getMaxActive());
         sourceBean.setMinPoolSize(((DruidXADataSource) druidDataSourceSlave1).getMinIdle());
-        sourceBean.setMaxLifetime((int)((DruidXADataSource) druidDataSourceSlave1).getMaxWait());
+        sourceBean.setMaxLifetime((int) ((DruidXADataSource) druidDataSourceSlave1).getMaxWait());
         sourceBean.setTestQuery(((DruidXADataSource) druidDataSourceSlave1).getValidationQuery());
         sourceBean.setUniqueResourceName("slave1");
         return sourceBean;
@@ -94,12 +92,12 @@ public class DataSourceFactory {
     /**
      * 创建支持XA事务的Atomikos数据源3
      */
-    @Bean
+    @Bean("dataSourceSlave2")
     public DataSource dataSourceSlave2(DataSource druidDataSourceSlave2) {
         AtomikosDataSourceBean sourceBean = new AtomikosDataSourceBean();
         sourceBean.setMaxPoolSize(((DruidXADataSource) druidDataSourceSlave2).getMaxActive());
         sourceBean.setMinPoolSize(((DruidXADataSource) druidDataSourceSlave2).getMinIdle());
-        sourceBean.setMaxLifetime((int)((DruidXADataSource) druidDataSourceSlave2).getMaxWait());
+        sourceBean.setMaxLifetime((int) ((DruidXADataSource) druidDataSourceSlave2).getMaxWait());
         sourceBean.setTestQuery(((DruidXADataSource) druidDataSourceSlave2).getValidationQuery());
         sourceBean.setXaDataSource((DruidXADataSource) druidDataSourceSlave2);
         sourceBean.setUniqueResourceName("slave2");
@@ -111,7 +109,7 @@ public class DataSourceFactory {
      * @param dataSourceMaster 数据源1
      * @return 数据源1的会话工厂
      */
-    @Bean
+    @Bean("sqlSessionFactoryMaster")
     public SqlSessionFactory sqlSessionFactoryMaster(DataSource dataSourceMaster, MybatisProperties mybatisProperties)
             throws Exception {
         return createSqlSessionFactory(dataSourceMaster, mybatisProperties);
@@ -122,7 +120,7 @@ public class DataSourceFactory {
      * @param dataSourceSlave1 数据源1
      * @return 数据源2的会话工厂
      */
-    @Bean
+    @Bean("sqlSessionFactorySlave1")
     public SqlSessionFactory sqlSessionFactorySlave1(DataSource dataSourceSlave1, MybatisProperties mybatisProperties)
             throws Exception {
         return createSqlSessionFactory(dataSourceSlave1, mybatisProperties);
@@ -132,7 +130,7 @@ public class DataSourceFactory {
      * @param dataSourceSlave2 数据源2
      * @return 数据源2的会话工厂
      */
-    @Bean
+    @Bean("sqlSessionFactorySlave2")
     public SqlSessionFactory sqlSessionFactorySlave2(DataSource dataSourceSlave2, MybatisProperties mybatisProperties)
             throws Exception {
         return createSqlSessionFactory(dataSourceSlave2, mybatisProperties);

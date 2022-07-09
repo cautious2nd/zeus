@@ -233,11 +233,7 @@ public class ClassDAOXmlUtil {
 			StringBuffer sb = new StringBuffer();
 			sb.append("package "+packagePath+";");
 			sb.append("\n");
-			sb.append("import org.apache.ibatis.annotations.Mapper;");
-			sb.append("\n");
 			sb.append("import "+domainNamePackage+"."+domainName+";");
-			sb.append("\n");
-			sb.append("import org.springframework.stereotype.Repository;");
 			sb.append("\n");
 			sb.append("import java.util.List;");
 			sb.append("\n");
@@ -248,10 +244,6 @@ public class ClassDAOXmlUtil {
 			sb.append("* @description："+mapperName);
 			sb.append("\n");
 			sb.append(" */");
-			sb.append("\n");
-			sb.append("@Repository");
-			sb.append("\n");
-			sb.append("@Mapper");
 			sb.append("\n");
 			sb.append("public interface "+mapperName+" extends BaseMapper<"+domainName+"> {");
 			sb.append("\n");

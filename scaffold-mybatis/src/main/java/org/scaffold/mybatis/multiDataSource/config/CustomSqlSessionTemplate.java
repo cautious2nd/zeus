@@ -103,7 +103,7 @@ public class CustomSqlSessionTemplate extends SqlSessionTemplate {
     private class SqlSessionInterceptor implements InvocationHandler {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            //在getSqlSession传参时候，用我们重写的getSqlSessionFactory获取当前数据源对应的会话工厂
+           // 在getSqlSession传参时候，用我们重写的getSqlSessionFactory获取当前数据源对应的会话工厂
             final SqlSession sqlSession = getSqlSession(
                     CustomSqlSessionTemplate.this.getSqlSessionFactory(),
                     CustomSqlSessionTemplate.this.executorType,
