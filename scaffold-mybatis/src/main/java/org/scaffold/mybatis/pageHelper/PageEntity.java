@@ -22,27 +22,27 @@ public class PageEntity implements Serializable {
      */
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private Integer pageNum = 1;
+    private Integer pageNum ;
 
     /**
      * 页码，从1开始
      */
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private Integer pageNo = 1;
+    private Integer pageNo ;
 
     /**
      * 页码，从1开始
      */
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private Integer pageCurrent = 1;
+    private Integer pageCurrent;
     /**
      * 页面大小
      */
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private Integer pageSize = 20;
+    private Integer pageSize ;
     /**
      * 分页合理化,null时用默认配置
      */
