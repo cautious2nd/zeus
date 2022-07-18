@@ -117,6 +117,8 @@ public class PageInterceptor implements Interceptor {
                 if (pageNum != null && pageSize != null) {
                     PageHelper.startPage(pageNum, pageSize, false, reasonable,
                             pageSizeZero,orderBy);
+                }else{
+                    return invocation.proceed();
                 }
             }else{
                return invocation.proceed();
