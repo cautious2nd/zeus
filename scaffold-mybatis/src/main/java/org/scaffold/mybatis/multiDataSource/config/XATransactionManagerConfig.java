@@ -23,14 +23,15 @@ public class XATransactionManagerConfig {
     @Bean
     public UserTransaction userTransaction() throws Throwable {
         UserTransactionImp userTransactionImp = new UserTransactionImp();
-        userTransactionImp.setTransactionTimeout(10000);
+        userTransactionImp.setTransactionTimeout(600000);
         return userTransactionImp;
     }
 
     @Bean(initMethod = "init", destroyMethod = "close")
-    public TransactionManager atomikosTransactionManager() {
+    public TransactionManager atomikosTransactionManager() throws Throwable{
         UserTransactionManager userTransactionManager = new UserTransactionManager();
         userTransactionManager.setForceShutdown(false);
+        userTransactionManager.setTransactionTimeout(600000);
         return userTransactionManager;
     }
 

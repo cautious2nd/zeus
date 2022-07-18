@@ -302,6 +302,7 @@ public interface MongoDAOSupport {
 
         AggregateIterable<Document> aggregateIterable = collection.aggregate(pipeline);
 
+
         MongoCursor<Document> mongoCursor = aggregateIterable.iterator();
 
         List<Document> result = new ArrayList<>();

@@ -22,27 +22,27 @@ public class PageEntity implements Serializable {
      */
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private int pageNum=1;
+    private Integer pageNum = 1;
 
     /**
      * 页码，从1开始
      */
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private int pageNo=1;
+    private Integer pageNo = 1;
 
     /**
      * 页码，从1开始
      */
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private int pageCurrent=1;
+    private Integer pageCurrent = 1;
     /**
      * 页面大小
      */
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private int pageSize=20;
+    private Integer pageSize = 20;
     /**
      * 分页合理化,null时用默认配置
      */
@@ -70,22 +70,37 @@ public class PageEntity implements Serializable {
     @MongoReflectionIgnore
     private int totalRow;
 
-    public void setPageNum(int pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public int getPageNum() {
+    public Integer getPageNum() {
         return pageNum;
     }
 
-    public int getPageSize() {
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public Integer getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(Integer pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public Integer getPageCurrent() {
+        return pageCurrent;
+    }
+
+    public void setPageCurrent(Integer pageCurrent) {
+        this.pageCurrent = pageCurrent;
+    }
+
+    public Integer getPageSize() {
         return pageSize;
     }
 
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
 
     public Boolean getReasonable() {
         return reasonable;
@@ -109,22 +124,6 @@ public class PageEntity implements Serializable {
 
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
-    }
-
-    public int getPageNo() {
-        return pageNo;
-    }
-
-    public void setPageNo(int pageNo) {
-        this.pageNo = pageNo;
-    }
-
-    public int getPageCurrent() {
-        return pageCurrent;
-    }
-
-    public void setPageCurrent(int pageCurrent) {
-        this.pageCurrent = pageCurrent;
     }
 
     public int getTotal() {

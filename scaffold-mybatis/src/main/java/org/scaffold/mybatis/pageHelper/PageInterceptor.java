@@ -86,15 +86,27 @@ public class PageInterceptor implements Interceptor {
             Object[] args = invocation.getArgs();
             MappedStatement ms = (MappedStatement) args[0];
             Object parameter = args[1];
+
             if (parameter instanceof PageEntity) {
                 Integer pageNO = ((PageEntity) parameter).getPageNo();
                 Integer pageCurrent = ((PageEntity) parameter).getPageCurrent();
                 Integer pageNum = ((PageEntity) parameter).getPageNum();
-                if (pageNO!=1){
+
+                //保留三个非1
+                 if(pageNO!=null && pageNO!=1){
                     pageNum=pageNO;
-                }else if(pageCurrent!=1){
+                } else if(pageCurrent!=null && pageCurrent!=1){
                     pageNum=pageCurrent;
                 }
+                //若没有不为1的 保留不为null的
+                if (pageNum==null){
+                    if(pageNO!=null ){
+                        pageNum=pageNO;
+                    } else if(pageCurrent!=null){
+                        pageNum=pageCurrent;
+                    }
+                }
+
                 Integer pageSize = ((PageEntity) parameter).getPageSize();
                 Boolean reasonable = ((PageEntity) parameter).getReasonable();
                 Boolean pageSizeZero =
@@ -103,8 +115,11 @@ public class PageInterceptor implements Interceptor {
                         ((PageEntity) parameter).getOrderBy();
 
                 if (pageNum != null && pageSize != null) {
-                    PageHelper.startPage(pageNum, pageSize, true, reasonable, pageSizeZero,orderBy);
+                    PageHelper.startPage(pageNum, pageSize, false, reasonable,
+                            pageSizeZero,orderBy);
                 }
+            }else{
+               return invocation.proceed();
             }
             RowBounds rowBounds = (RowBounds) args[2];
             ResultHandler resultHandler = (ResultHandler) args[3];
