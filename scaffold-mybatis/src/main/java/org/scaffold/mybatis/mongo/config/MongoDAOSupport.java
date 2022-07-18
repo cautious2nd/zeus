@@ -204,12 +204,22 @@ public interface MongoDAOSupport {
         MongoCollection<Document> collection = mongoTemplate.getCollection(collectionName);
         FindIterable<Document> findIterable = null;
         if (filter.getPageEntity() != null && filter.getPageEntity().getPageSize() != -1 && filter.getPageEntity().getPageSize() != 0) {
-            int pageNum = filter.getPageEntity().getPageNum();
-            if (filter.getPageEntity().getPageNo() != 1) {
-                pageNum = filter.getPageEntity().getPageNo();
+            Integer pageNum = filter.getPageEntity().getPageNum();
+            Integer pageNO =  filter.getPageEntity().getPageNo();
+            Integer pageCurrent =filter.getPageEntity().getPageCurrent();
+            //保留三个非1
+            if(pageNO!=null && pageNO!=1){
+                pageNum=pageNO;
+            } else if(pageCurrent!=null && pageCurrent!=1){
+                pageNum=pageCurrent;
             }
-            if (filter.getPageEntity().getPageCurrent() != 1) {
-                pageNum = filter.getPageEntity().getPageCurrent();
+            //若没有不为1的 保留不为null的
+            if (pageNum==null){
+                if(pageNO!=null ){
+                    pageNum=pageNO;
+                } else if(pageCurrent!=null){
+                    pageNum=pageCurrent;
+                }
             }
 
             findIterable = collection.find(filter.filter()).sort(filter.getSort())
