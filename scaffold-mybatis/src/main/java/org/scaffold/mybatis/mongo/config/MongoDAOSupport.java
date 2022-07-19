@@ -212,7 +212,6 @@ public interface MongoDAOSupport {
                 pageNum = filter.getPageEntity().getPageCurrent();
             }
 
-
             findIterable = collection.find(filter.filter()).sort(filter.getSort())
                     .skip(Math.multiplyExact(filter.getPageEntity().getPageSize(),
                             pageNum - 1))
