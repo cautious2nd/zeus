@@ -204,13 +204,14 @@ public interface MongoDAOSupport {
         MongoCollection<Document> collection = mongoTemplate.getCollection(collectionName);
         FindIterable<Document> findIterable = null;
         if (filter.getPageEntity() != null && filter.getPageEntity().getPageSize() != -1 && filter.getPageEntity().getPageSize() != 0) {
-            int pageNum=filter.getPageEntity().getPageNum();
-            if(pageNum<=0){
-                pageNum=filter.getPageEntity().getPageNo();
+            int pageNum = filter.getPageEntity().getPageNum();
+            if (filter.getPageEntity().getPageNo() != 1) {
+                pageNum = filter.getPageEntity().getPageNo();
             }
-            if(pageNum<=0){
-                pageNum=filter.getPageEntity().getPageCurrent();
+            if (filter.getPageEntity().getPageCurrent() != 1) {
+                pageNum = filter.getPageEntity().getPageCurrent();
             }
+
 
             findIterable = collection.find(filter.filter()).sort(filter.getSort())
                     .skip(Math.multiplyExact(filter.getPageEntity().getPageSize(),
