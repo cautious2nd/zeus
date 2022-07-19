@@ -22,27 +22,27 @@ public class PageEntity implements Serializable {
      */
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private Integer pageNum = 1;
+    private int pageNum = 1;
 
     /**
      * 页码，从1开始
      */
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private Integer pageNo = 1;
+    private int pageNo = 1;
 
     /**
      * 页码，从1开始
      */
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private Integer pageCurrent = 1;
+    private int pageCurrent = 1;
     /**
      * 页面大小
      */
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private Integer pageSize = -1;
+    private int pageSize = -1;
     /**
      * 分页合理化,null时用默认配置
      */
@@ -70,35 +70,35 @@ public class PageEntity implements Serializable {
     @MongoReflectionIgnore
     private int totalRow;
 
-    public Integer getPageNum() {
+    public int getPageNum() {
         return pageNum;
     }
 
-    public void setPageNum(Integer pageNum) {
+    public void setPageNum(int pageNum) {
         this.pageNum = pageNum;
     }
 
-    public Integer getPageNo() {
+    public int getPageNo() {
         return pageNo;
     }
 
-    public void setPageNo(Integer pageNo) {
+    public void setPageNo(int pageNo) {
         this.pageNo = pageNo;
     }
 
-    public Integer getPageCurrent() {
+    public int getPageCurrent() {
         return pageCurrent;
     }
 
-    public void setPageCurrent(Integer pageCurrent) {
+    public void setPageCurrent(int pageCurrent) {
         this.pageCurrent = pageCurrent;
     }
 
-    public Integer getPageSize() {
+    public int getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(Integer pageSize) {
+    public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
     }
 
