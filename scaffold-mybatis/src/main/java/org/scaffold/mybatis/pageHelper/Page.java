@@ -130,14 +130,19 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     private Page(int pageNum, int pageSize, boolean count, Boolean reasonable) {
+
         super(0);
         if (pageNum == 1 && pageSize == Integer.MAX_VALUE) {
             pageSizeZero = true;
             pageSize = 0;
         }
+        if (pageSize==0 ||pageSize==-1){
+            this.count = false;
+        }else {
+            this.count = true;
+        }
         this.pageNum = pageNum;
         this.pageSize = pageSize;
-        this.count = count;
         calculateStartAndEndRow();
         setReasonable(reasonable);
     }
