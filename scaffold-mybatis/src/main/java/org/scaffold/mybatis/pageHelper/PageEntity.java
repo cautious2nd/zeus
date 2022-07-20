@@ -64,11 +64,11 @@ public class PageEntity implements Serializable {
 
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private int total;
+    private long total;
 
     @XMLReflectionIgnore
     @MongoReflectionIgnore
-    private int totalRow;
+    private long totalRow;
 
     public int getPageNum() {
         return pageNum;
@@ -126,19 +126,19 @@ public class PageEntity implements Serializable {
         this.orderBy = orderBy;
     }
 
-    public int getTotal() {
+    public long getTotal() {
         return total;
     }
 
-    public void setTotal(int total) {
+    public void setTotal(long total) {
         this.total = total;
     }
 
-    public int getTotalRow() {
+    public long getTotalRow() {
         return totalRow;
     }
 
-    public void setTotalRow(int totalRow) {
+    public void setTotalRow(long totalRow) {
         this.totalRow = totalRow;
     }
 }

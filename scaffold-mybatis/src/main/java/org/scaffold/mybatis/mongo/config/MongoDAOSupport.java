@@ -226,8 +226,14 @@ public interface MongoDAOSupport {
         List<T> result = new ArrayList<>();
         while (mongoCursor.hasNext()) {
             Document document = mongoCursor.next();
-            result.add(GsonUtils.get().readValue(
-                    document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), clazz));
+            try {
+
+                result.add(GsonUtils.get().readValue(
+                        document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), clazz));
+            }
+            catch (Exception e){
+                System.out.println(document);
+            }
         }
 
         logger.debug(collection.getNamespace().getFullName() + "::findManyByPage::" + filter.filter().toString()

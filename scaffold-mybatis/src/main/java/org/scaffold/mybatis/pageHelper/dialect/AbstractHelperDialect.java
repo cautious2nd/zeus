@@ -31,10 +31,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.RowBounds;
-import org.scaffold.mybatis.pageHelper.Constant;
-import org.scaffold.mybatis.pageHelper.Page;
-import org.scaffold.mybatis.pageHelper.PageHelper;
-import org.scaffold.mybatis.pageHelper.PageRowBounds;
+import org.scaffold.mybatis.pageHelper.*;
 import org.scaffold.mybatis.pageHelper.parser.OrderByParser;
 import org.scaffold.mybatis.pageHelper.util.ExecutorUtil;
 import org.scaffold.mybatis.pageHelper.util.MetaObjectUtil;
@@ -219,6 +216,10 @@ public abstract class AbstractHelperDialect extends AbstractDialect implements C
             page.setTotal(pageList.size());
         } else if (page.isOrderByOnly()) {
             page.setTotal(pageList.size());
+        }else {
+            if (parameterObject instanceof PageEntity) {
+                ((PageEntity) parameterObject).setTotal(page.getTotal());
+            }
         }
         return page;
     }
