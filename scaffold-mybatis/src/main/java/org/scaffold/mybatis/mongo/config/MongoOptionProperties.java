@@ -1,5 +1,6 @@
 package org.scaffold.mybatis.mongo.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @version: $version$
  */
 @Component
-@ConfigurationProperties(prefix = "mongodb.option")
+@ConditionalOnProperty(prefix = "mongodb.option",name = "option")
 public class MongoOptionProperties {
     private Integer minConnectionPerHost = 0;
     private Integer maxConnectionPerHost = 100;
