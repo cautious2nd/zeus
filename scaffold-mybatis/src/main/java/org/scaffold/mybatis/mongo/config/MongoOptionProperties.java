@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @version: $version$
  */
 @Component
-@ConditionalOnProperty(prefix = "mongodb.option",name = "option")
+@ConfigurationProperties(prefix = "mongodb.option")
 public class MongoOptionProperties {
     private Integer minConnectionPerHost = 0;
     private Integer maxConnectionPerHost = 100;

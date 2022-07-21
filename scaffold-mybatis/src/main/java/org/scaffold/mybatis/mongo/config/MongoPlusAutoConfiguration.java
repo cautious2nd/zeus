@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * @version: $version$
  */
 @Configuration
-@ConditionalOnProperty(prefix = "mongodb.dbconfig",name = "addresses")
+@ConfigurationProperties(prefix = "mongodb.dbconfig")
 @EnableConfigurationProperties(MongoOptionProperties.class)
 public class MongoPlusAutoConfiguration {
     /**
