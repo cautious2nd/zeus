@@ -5,11 +5,15 @@
  **/
 package org.scaffold.mybatis.mongo.config;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.json.JsonMode;
@@ -230,8 +234,7 @@ public interface MongoDAOSupport {
 
                 result.add(GsonUtils.get().readValue(
                         document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), clazz));
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(document);
             }
         }
@@ -322,6 +325,69 @@ public interface MongoDAOSupport {
         return result;
     }
 
+
+    default List<Document> aggregateByPage(MongoTemplate mongoTemplate,
+                                           String collectionName, MongoAggregateLookupByPageFilter filter) {
+
+
+        MongoCollection<Document> collection = mongoTemplate.getCollection(collectionName);
+
+        List<Bson> pipeline = filter.getPipeline();
+
+
+        if (filter.getPageEntity() != null && filter.getPageEntity().getPageSize() != -1 && filter.getPageEntity().getPageSize() != 0) {
+            int pageNum = filter.getPageEntity().getPageNum();
+            if (filter.getPageEntity().getPageNo() != 1) {
+                pageNum = filter.getPageEntity().getPageNo();
+            }
+            if (filter.getPageEntity().getPageCurrent() != 1) {
+                pageNum = filter.getPageEntity().getPageCurrent();
+            }
+
+            pipeline.add(new Document("$count","count"));
+
+            AggregateIterable<Document> countDocument = collection.aggregate(pipeline);
+
+            MongoCursor<Document> mongoCursorCount =countDocument.iterator();
+
+
+            List<Document> result = new ArrayList<>();
+            while (mongoCursorCount.hasNext()) {
+                Document document = mongoCursorCount.next();
+                result.add(document);
+                filter.getPageEntity().setTotalRow(document.getInteger("count"));
+                filter.getPageEntity().setTotal(document.getInteger("count"));
+                //System.out.println(GsonUtils.get().toJson(document));
+            }
+
+            pipeline.remove(pipeline.size() - 1);
+
+            pipeline.add(new Document("$skip",
+                    Math.multiplyExact(filter.getPageEntity().getPageSize(), pageNum - 1)));
+            pipeline.add(new Document("$limit",
+                    filter.getPageEntity().getPageSize()));
+
+        }
+
+
+        AggregateIterable<Document> aggregateIterable = collection.aggregate(pipeline);
+
+        MongoCursor<Document> mongoCursor = aggregateIterable.iterator();
+
+        List<Document> result = new ArrayList<>();
+        while (mongoCursor.hasNext()) {
+            Document document = mongoCursor.next();
+            result.add(document);
+            //System.out.println(GsonUtils.get().toJson(document));
+
+        }
+
+        logger.info(collection.getNamespace().getFullName() + ":aggregatePage" +
+                ":" + filter.info() + "====" + result.size());
+
+        return result;
+    }
+
     interface MongoFindFilter {
         Bson filter();
 
@@ -408,8 +474,6 @@ public interface MongoDAOSupport {
             return pipeLine;
         }
 
-        ;
-
         Bson setGroup();
 
         default Bson getGroup() {
@@ -453,6 +517,34 @@ public interface MongoDAOSupport {
 
         @Override
         default List<? extends Bson> getPipeline() {
+            List<Bson> pipeLine = new LinkedList<>();
+            pipeLine.add(getLookup());
+            pipeLine.add(getMatch());
+            return pipeLine;
+        }
+
+        @Override
+        default String info() {
+            return GsonUtils.get().toJson(getPipeline());
+        }
+
+    }
+
+
+    interface MongoAggregateLookupByPageFilter extends MongoAggregateFilter {
+
+        default PageEntity getPageEntity() {
+            return null;
+        }
+
+        Bson setLookup();
+
+        default Bson getLookup() {
+            return new Document("$lookup", setLookup());
+        }
+
+        @Override
+        default List<Bson> getPipeline() {
             List<Bson> pipeLine = new LinkedList<>();
             pipeLine.add(getLookup());
             pipeLine.add(getMatch());

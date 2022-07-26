@@ -162,7 +162,6 @@ public class PageInfo<T> extends PageSerializable<T> {
             if(list.size()<1){
             this.pageNum = 1;
             this.pageSize = list.size();
-
             this.pages = this.pageSize > 0 ? 1 : 0;
             this.size = list.size();
             this.startRow = 0;
@@ -170,10 +169,13 @@ public class PageInfo<T> extends PageSerializable<T> {
             }else{
                 this.pageNum = pageEntity.getPageNum();
                 this.pageSize = pageEntity.getPageSize();
-
-                this.pages = this.pageSize > 0 ? 1 : 0;
-                this.size = list.size();
                 this.total=pageEntity.getTotal();
+                if (pageSize > 0) {
+                    pages = (int) (total / pageSize + ((total % pageSize == 0) ? 0 : 1));
+                } else {
+                    pages = 0;
+                }
+                this.size = list.size();
                 this.startRow = 0;
                 this.endRow = list.size() > 0 ? list.size() - 1 : 0;
             }
