@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
@@ -21,11 +22,11 @@ import java.util.Optional;
 
 
 /**
- * @author : heibaiying
  * @description : 多数据源配置
  */
 @Configuration
-@MapperScan(basePackages = {"org.*.*.mapper", "org.*.*.dao"}, sqlSessionTemplateRef = "sqlSessionTemplate")
+@MapperScan(basePackages = {"org.**.dao","org.**.mapper"},
+        sqlSessionTemplateRef = "sqlSessionTemplate")
 @EnableConfigurationProperties(MybatisProperties.class)
 public class DataSourceFactory {
 
@@ -113,6 +114,7 @@ public class DataSourceFactory {
      * @return 数据源1的会话工厂
      */
     @Bean("sqlSessionFactoryMaster")
+    @Primary
     public SqlSessionFactory sqlSessionFactoryMaster(DataSource dataSourceMaster, MybatisProperties mybatisProperties)
             throws Exception {
         return createSqlSessionFactory(dataSourceMaster, mybatisProperties);
