@@ -22,20 +22,28 @@ public class MonUtils {
 	}
 
 	public static String getLastMon(String date) {
+		return getLastMon(date, 1);
+	}
+
+	public static String getLastMon(String date, Integer cycle) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, Integer.parseInt(date.substring(0, 4)));
 		calendar.set(Calendar.MONTH, Integer.parseInt(date.substring(4)) - 1);
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
-		calendar.add(Calendar.MONTH, -1);
+		calendar.add(Calendar.MONTH, -cycle);
 		return DateUtil.getDate(calendar.getTime(), "yyyyMM");
 	}
 
 	public static String getNextMon(String date) {
+		return getNextMon(date, 1);
+	}
+
+	public static String getNextMon(String date, Integer cycle) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, Integer.parseInt(date.substring(0, 4)));
 		calendar.set(Calendar.MONTH, Integer.parseInt(date.substring(4)) - 1);
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
-		calendar.add(Calendar.MONTH, 1);
+		calendar.add(Calendar.MONTH, cycle);
 		return DateUtil.getDate(calendar.getTime(), "yyyyMM");
 	}
 
@@ -47,7 +55,7 @@ public class MonUtils {
 		}
 		return mons;
 	}
-	
+
 	public static int getMonthDays(int mon) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, mon / 100);
@@ -55,4 +63,5 @@ public class MonUtils {
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
 		return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 	}
+
 }
