@@ -1,7 +1,9 @@
 package org.scaffold.mybatis.multiDataSource.config;
 
 import com.alibaba.druid.pool.xa.DruidXADataSource;
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
+import io.seata.rm.datasource.DataSourceProxy;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -25,10 +28,10 @@ import java.util.Optional;
 /**
  * @description : 多数据源配置
  */
-@MapperScan(basePackages = {"org.**.dao", "org.**.mapper"},
+@MapperScan(basePackages = {"org.**.dao","org.**.mapper"},
         sqlSessionTemplateRef = "sqlSessionTemplate")
 @EnableConfigurationProperties(MybatisProperties.class)
-public class DataSourceFactory {
+public class SeataDataSourceFactory {
 
 
     /***
@@ -37,7 +40,7 @@ public class DataSourceFactory {
     @Bean("druidDataSourceMaster")
     @ConfigurationProperties("spring.datasource.druid.master")
     public DataSource druidDataSourceMaster() {
-        return new DruidXADataSource();
+        return DruidDataSourceBuilder.create().build();
     }
 
     /***
@@ -47,7 +50,7 @@ public class DataSourceFactory {
     @ConfigurationProperties("spring.datasource.druid.slave1")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave1", name = "enabled", havingValue = "true")
     public DataSource druidDataSourceSlave1() {
-        return new DruidXADataSource();
+        return DruidDataSourceBuilder.create().build();
     }
 
     /***
@@ -57,61 +60,35 @@ public class DataSourceFactory {
     @ConfigurationProperties("spring.datasource.druid.slave2")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave2", name = "enabled", havingValue = "true")
     public DataSource druidDataSourceSlave2() {
-        return new DruidXADataSource();
+        return DruidDataSourceBuilder.create().build();
     }
 
 
     /**
-     * 创建支持XA事务的Atomikos数据源1
+     * 创建支持seata
      */
     @Bean("dataSourceMaster")
-    public DataSource dataSourceMaster(@Qualifier("druidDataSourceMaster") DataSource druidDataSourceMaster) {
-        AtomikosDataSourceBean sourceBean = new AtomikosDataSourceBean();
-        sourceBean.setXaDataSource((DruidXADataSource) druidDataSourceMaster);
-        sourceBean.setMaxPoolSize(((DruidXADataSource) druidDataSourceMaster).getMaxActive());
-        sourceBean.setMinPoolSize(((DruidXADataSource) druidDataSourceMaster).getMinIdle());
-        sourceBean.setMaxLifetime((int) ((DruidXADataSource) druidDataSourceMaster).getMaxWait());
-        sourceBean.setTestQuery(((DruidXADataSource) druidDataSourceMaster).getValidationQuery());
-        sourceBean.setBorrowConnectionTimeout((int) (((DruidXADataSource) druidDataSourceMaster).getMinEvictableIdleTimeMillis() / 1000));
-        // 必须为数据源指定唯一标识
-        sourceBean.setUniqueResourceName("master");
-        return sourceBean;
+    public DataSourceProxy dataSourceMaster(DataSource druidDataSourceMaster) {
+        return new DataSourceProxy(druidDataSourceMaster,DBConstant.MASTER);
     }
 
     /**
-     * 创建支持XA事务的Atomikos数据源2
+     * 创建支持seata
      */
     @Bean("dataSourceSlave1")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave1", name = "enabled", havingValue = "true")
-    public DataSource dataSourceSlave1(@Qualifier("druidDataSourceSlave1") DataSource druidDataSourceSlave1) {
-        AtomikosDataSourceBean sourceBean = new AtomikosDataSourceBean();
-        sourceBean.setXaDataSource((DruidXADataSource) druidDataSourceSlave1);
-        sourceBean.setMaxPoolSize(((DruidXADataSource) druidDataSourceSlave1).getMaxActive());
-        sourceBean.setMinPoolSize(((DruidXADataSource) druidDataSourceSlave1).getMinIdle());
-        sourceBean.setMaxLifetime((int) ((DruidXADataSource) druidDataSourceSlave1).getMaxWait());
-        sourceBean.setTestQuery(((DruidXADataSource) druidDataSourceSlave1).getValidationQuery());
-        sourceBean.setBorrowConnectionTimeout((int) (((DruidXADataSource) druidDataSourceSlave1).getMinEvictableIdleTimeMillis() / 1000));
-        sourceBean.setUniqueResourceName("slave1");
-        return sourceBean;
+    public DataSource dataSourceSlave1(DataSource druidDataSourceSlave1) {
+        return new DataSourceProxy(druidDataSourceSlave1,DBConstant.SLAVE1);
     }
 
     /**
-     * 创建支持XA事务的Atomikos数据源3
+     * 创建支持seata
      */
     @Bean("dataSourceSlave2")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave2", name = "enabled", havingValue = "true")
-    public DataSource dataSourceSlave2(@Qualifier("druidDataSourceSlave2") DataSource druidDataSourceSlave2) {
-        AtomikosDataSourceBean sourceBean = new AtomikosDataSourceBean();
-        sourceBean.setMaxPoolSize(((DruidXADataSource) druidDataSourceSlave2).getMaxActive());
-        sourceBean.setMinPoolSize(((DruidXADataSource) druidDataSourceSlave2).getMinIdle());
-        sourceBean.setMaxLifetime((int) ((DruidXADataSource) druidDataSourceSlave2).getMaxWait());
-        sourceBean.setBorrowConnectionTimeout((int) (((DruidXADataSource) druidDataSourceSlave2).getMinEvictableIdleTimeMillis() / 1000));
-        sourceBean.setTestQuery(((DruidXADataSource) druidDataSourceSlave2).getValidationQuery());
-        sourceBean.setXaDataSource((DruidXADataSource) druidDataSourceSlave2);
-        sourceBean.setUniqueResourceName("slave2");
-        return sourceBean;
+    public DataSource dataSourceSlave2(DataSource druidDataSourceSlave2) {
+        return new DataSourceProxy(druidDataSourceSlave2,DBConstant.SLAVE2);
     }
-
 
     /**
      * @param dataSourceMaster 数据源1
@@ -147,7 +124,6 @@ public class DataSourceFactory {
         return createSqlSessionFactory(dataSourceSlave2, mybatisProperties);
     }
 
-
     /***
      * sqlSessionTemplate与Spring事务管理一起使用，以确保使用的实际SqlSession是与当前Spring事务关联的,
      * 此外它还管理会话生命周期，包括根据Spring事务配置根据需要关闭，提交或回滚会话
@@ -168,7 +144,6 @@ public class DataSourceFactory {
         customSqlSessionTemplate.setTargetSqlSessionFactories(sqlSessionFactoryMap);
         return customSqlSessionTemplate;
     }
-
 
     /***
      * 自定义会话工厂

@@ -16,7 +16,6 @@ import javax.transaction.UserTransaction;
  * @author : heibaiying
  * @description : JTA事务配置
  */
-@Configuration
 @EnableTransactionManagement
 public class XATransactionManagerConfig {
 
