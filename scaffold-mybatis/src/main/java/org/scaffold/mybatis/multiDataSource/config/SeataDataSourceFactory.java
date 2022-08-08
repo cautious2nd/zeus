@@ -1,5 +1,6 @@
 package org.scaffold.mybatis.multiDataSource.config;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.xa.DruidXADataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
@@ -37,58 +38,33 @@ public class SeataDataSourceFactory {
     /***
      * 创建 DruidXADataSource 1 用@ConfigurationProperties自动配置属性
      */
-    @Bean("druidDataSourceMaster")
+    @Bean("dataSourceMaster")
+    @Primary
     @ConfigurationProperties("spring.datasource.druid.master")
-    public DataSource druidDataSourceMaster() {
-        return DruidDataSourceBuilder.create().build();
+    public DataSource dataSourceMaster() {
+        return new DruidDataSource();
     }
 
     /***
      * 创建 DruidXADataSource 2
      */
-    @Bean("druidDataSourceSlave1")
+    @Bean("dataSourceSlave1")
     @ConfigurationProperties("spring.datasource.druid.slave1")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave1", name = "enabled", havingValue = "true")
-    public DataSource druidDataSourceSlave1() {
-        return DruidDataSourceBuilder.create().build();
+    public DataSource dataSourceSlave1() {
+        return new DruidDataSource();
     }
 
     /***
      * 创建 DruidXADataSource 3
      */
-    @Bean("druidDataSourceSlave2")
+    @Bean("dataSourceSlave2")
     @ConfigurationProperties("spring.datasource.druid.slave2")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave2", name = "enabled", havingValue = "true")
-    public DataSource druidDataSourceSlave2() {
-        return DruidDataSourceBuilder.create().build();
+    public DataSource dataSourceSlave2() {
+        return new DruidDataSource();
     }
 
-
-    /**
-     * 创建支持seata
-     */
-    @Bean("dataSourceMaster")
-    public DataSourceProxy dataSourceMaster(DataSource druidDataSourceMaster) {
-        return new DataSourceProxy(druidDataSourceMaster,DBConstant.MASTER);
-    }
-
-    /**
-     * 创建支持seata
-     */
-    @Bean("dataSourceSlave1")
-    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave1", name = "enabled", havingValue = "true")
-    public DataSource dataSourceSlave1(DataSource druidDataSourceSlave1) {
-        return new DataSourceProxy(druidDataSourceSlave1,DBConstant.SLAVE1);
-    }
-
-    /**
-     * 创建支持seata
-     */
-    @Bean("dataSourceSlave2")
-    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave2", name = "enabled", havingValue = "true")
-    public DataSource dataSourceSlave2(DataSource druidDataSourceSlave2) {
-        return new DataSourceProxy(druidDataSourceSlave2,DBConstant.SLAVE2);
-    }
 
     /**
      * @param dataSourceMaster 数据源1
@@ -132,8 +108,8 @@ public class SeataDataSourceFactory {
     @Bean
     public CustomSqlSessionTemplate sqlSessionTemplate(@Qualifier("sqlSessionFactoryMaster") SqlSessionFactory sqlSessionFactoryMaster) {
 
-
         Map<Object, SqlSessionFactory> sqlSessionFactoryMap = new HashMap<>();
+
         sqlSessionFactoryMap.put(DBConstant.MASTER, sqlSessionFactoryMaster);
 
         setSqlSession(sqlSessionFactoryMap, DBConstant.SLAVE1, "sqlSessionFactorySlave1");
@@ -141,7 +117,9 @@ public class SeataDataSourceFactory {
         setSqlSession(sqlSessionFactoryMap, DBConstant.SLAVE2, "sqlSessionFactorySlave2");
 
         CustomSqlSessionTemplate customSqlSessionTemplate = new CustomSqlSessionTemplate(sqlSessionFactoryMaster);
+
         customSqlSessionTemplate.setTargetSqlSessionFactories(sqlSessionFactoryMap);
+
         return customSqlSessionTemplate;
     }
 
