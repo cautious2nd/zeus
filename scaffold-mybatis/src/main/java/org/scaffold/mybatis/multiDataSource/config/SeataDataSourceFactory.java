@@ -39,40 +39,39 @@ public class SeataDataSourceFactory {
     /***
      * 创建 DruidXADataSource 1 用@ConfigurationProperties自动配置属性
      */
-    @Bean("dataSourceMaster")
-    @Primary
+    @Bean("originMaster")
     @ConfigurationProperties("spring.datasource.druid.master")
-    public DataSource dataSourceMaster() {
+    public DataSource originMaster() {
         return new DruidDataSource();
     }
 
     /***
      * 创建 DruidXADataSource 2
      */
-    @Bean("dataSourceSlave1")
+    @Bean("originSlave1")
     @ConfigurationProperties("spring.datasource.druid.slave1")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave1", name = "enabled", havingValue = "true")
-    public DataSource dataSourceSlave1() {
+    public DataSource originSlave1() {
         return new DruidDataSource();
     }
 
     /***
      * 创建 DruidXADataSource 3
      */
-    @Bean("dataSourceSlave2")
+    @Bean("originSlave2")
     @ConfigurationProperties("spring.datasource.druid.slave2")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave2", name = "enabled", havingValue = "true")
-    public DataSource dataSourceSlave2() {
+    public DataSource originSlave2() {
         return new DruidDataSource();
     }
 
     /***
      * 创建 DruidXADataSource 3
      */
-    @Bean("dataSourceSlave3")
+    @Bean("originSlave3")
     @ConfigurationProperties("spring.datasource.druid.slave3")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave3", name =   "enabled", havingValue = "true")
-    public DataSource dataSourceSlave3() {
+    public DataSource originSlave3() {
         return new DruidDataSource();
     }
 
@@ -80,12 +79,63 @@ public class SeataDataSourceFactory {
     /***
      * 创建 DruidXADataSource 3
      */
-    @Bean("dataSourceSlave4")
+    @Bean("originSlave4")
     @ConfigurationProperties("spring.datasource.druid.slave4")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave4", name = "enabled", havingValue = "true")
-    public DataSource dataSourceSlave4() {
+    public DataSource originSlave4() {
         return new DruidDataSource();
     }
+
+
+    /***
+     * 创建 DruidXADataSource 1 用@ConfigurationProperties自动配置属性
+     */
+    @Bean("dataSourceMaster")
+    @Primary
+    public DataSource dataSourceMaster(@Qualifier("originMaster") DataSource dataSource) {
+        return new DataSourceProxy(dataSource);
+    }
+
+    /***
+     * 创建 DruidXADataSource 2
+     */
+    @Bean("dataSourceSlave1")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave1", name = "enabled", havingValue = "true")
+    public DataSource dataSourceSlave1(@Qualifier("originSlave1") DataSource dataSource) {
+      return  new DataSourceProxy(dataSource);
+    }
+
+    /***
+     * 创建 DruidXADataSource 2
+     */
+    @Bean("dataSourceSlave2")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave2", name =
+            "enabled", havingValue = "true")
+    public DataSource dataSourceSlave2(@Qualifier("originSlave2") DataSource dataSource) {
+        return  new DataSourceProxy(dataSource);
+    }
+
+    /***
+     * 创建 DruidXADataSource 2
+     */
+    @Bean("dataSourceSlave3")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave3", name =
+            "enabled", havingValue = "true")
+    public DataSource dataSourceSlave3(@Qualifier("originSlave3") DataSource dataSource) {
+        return  new DataSourceProxy(dataSource);
+    }
+
+    /***
+     * 创建 DruidXADataSource 2
+     */
+    @Bean("dataSourceSlave4")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave4", name =
+            "enabled", havingValue = "true")
+    public DataSource dataSourceSlave4(@Qualifier("originSlave4") DataSource dataSource) {
+        return  new DataSourceProxy(dataSource);
+    }
+
+
 
 
     /**
