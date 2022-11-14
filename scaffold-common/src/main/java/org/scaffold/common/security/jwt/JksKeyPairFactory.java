@@ -6,6 +6,8 @@
 **/
 package org.scaffold.common.security.jwt;
 
+import org.springframework.core.io.ClassPathResource;
+
 import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -15,8 +17,6 @@ import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.springframework.core.io.ClassPathResource;
 
 public class JksKeyPairFactory implements IKeyPairFactory {
 	private final static Lock LOCK = new ReentrantLock();

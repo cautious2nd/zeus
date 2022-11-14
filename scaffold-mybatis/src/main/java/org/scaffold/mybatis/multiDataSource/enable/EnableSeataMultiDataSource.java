@@ -1,9 +1,6 @@
 package org.scaffold.mybatis.multiDataSource.enable;
 
-import org.scaffold.mybatis.multiDataSource.config.DataSourceFactory;
 import org.scaffold.mybatis.multiDataSource.config.SeataDataSourceFactory;
-import org.scaffold.mybatis.multiDataSource.config.XATransactionManagerConfig;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

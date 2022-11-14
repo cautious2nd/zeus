@@ -6,15 +6,15 @@
 **/
 package org.scaffold.logger.processor;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ScaffoldLoggerTraceEnvironmentPostProcessor implements EnvironmentPostProcessor {
 	private static final String PROPERTY_SOURCE_NAME = "defaultProperties";

@@ -15,7 +15,8 @@
 		<module>scaffold-cache</module>
 		<module>scaffold-mybatis</module>
 		<module>scaffold-mongo</module>
-	</modules>
+        <module>scaffold-file</module>
+    </modules>
 
 
 

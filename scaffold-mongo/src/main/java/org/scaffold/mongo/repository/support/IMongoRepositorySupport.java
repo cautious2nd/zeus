@@ -6,36 +6,24 @@
 **/
 package org.scaffold.mongo.repository.support;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.bson.json.JsonMode;
-import org.bson.json.JsonWriterSettings;
-import org.scaffold.common.annotation.AnnotationUtils;
-import org.scaffold.common.annotation.MongoWriteIgnore;
-import org.scaffold.common.json.GsonUtils;
-import org.scaffold.common.reflect.ReflectUtil;
-import org.scaffold.logger.log.ScaffoldLogger;
-import org.scaffold.mongo.service.page.Page;
-
 import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.DeleteOneModel;
-import com.mongodb.client.model.InsertOneModel;
-import com.mongodb.client.model.UpdateManyModel;
-import com.mongodb.client.model.UpdateOneModel;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.model.WriteModel;
+import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.json.JsonMode;
+import org.bson.json.JsonWriterSettings;
+import org.scaffold.common.annotation.MongoWriteIgnore;
+import org.scaffold.common.json.GsonUtils;
+import org.scaffold.logger.log.ScaffoldLogger;
+import org.scaffold.mongo.service.page.Page;
+
+import java.lang.reflect.Field;
+import java.util.*;
 
 public interface IMongoRepositorySupport {
 

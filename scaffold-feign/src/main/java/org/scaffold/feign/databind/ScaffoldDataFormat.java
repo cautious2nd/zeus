@@ -6,11 +6,7 @@
 **/
 package org.scaffold.feign.databind;
 
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParseException;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.Date;
 
 public class ScaffoldDataFormat extends DateFormat {

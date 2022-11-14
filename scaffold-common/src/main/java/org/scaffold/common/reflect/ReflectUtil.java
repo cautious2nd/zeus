@@ -6,11 +6,11 @@
 **/
 package org.scaffold.common.reflect;
 
+import org.scaffold.common.annotation.ReflectionIgnore;
+
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.scaffold.common.annotation.ReflectionIgnore;
 
 public class ReflectUtil {
 	/**

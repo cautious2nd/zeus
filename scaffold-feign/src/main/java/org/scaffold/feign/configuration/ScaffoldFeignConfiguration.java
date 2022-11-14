@@ -6,8 +6,8 @@
 **/
 package org.scaffold.feign.configuration;
 
-import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.RequestInterceptor;
 import org.scaffold.feign.DefaultScaffoldErrorDecoder;
 import org.scaffold.feign.ScaffoldErrorDecoder;
 import org.scaffold.feign.ScaffoldRequestInterceptor;
@@ -24,9 +24,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import feign.RequestInterceptor;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableConfigurationProperties(ScaffoldFeignProPerties.class)

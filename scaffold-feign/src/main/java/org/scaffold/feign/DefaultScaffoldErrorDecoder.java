@@ -6,13 +6,12 @@
 **/
 package org.scaffold.feign;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-
-import org.scaffold.common.error.ScaffoldFeignException;
-
 import feign.Response;
 import feign.Util;
+import org.scaffold.common.error.ScaffoldFeignException;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class DefaultScaffoldErrorDecoder extends ScaffoldErrorDecoder {
 

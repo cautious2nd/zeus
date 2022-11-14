@@ -24,8 +24,6 @@
 
 package org.scaffold.mybatis.pageHelper;
 
-import org.scaffold.mybatis.generator.MongoReflectionIgnore;
-import org.scaffold.mybatis.generator.XMLReflectionIgnore;
 import org.scaffold.mybatis.pageHelper.page.PageAutoDialect;
 
 import java.io.Closeable;
