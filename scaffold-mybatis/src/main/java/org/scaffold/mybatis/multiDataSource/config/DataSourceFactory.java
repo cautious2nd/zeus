@@ -25,8 +25,8 @@ import java.util.Optional;
 /**
  * @description : 多数据源配置
  */
-@MapperScan(basePackages = {"org.**.dao", "org.**.mapper"},
-        sqlSessionTemplateRef = "sqlSessionTemplate")
+//@MapperScan(basePackages = {"org.**.dao", "org.**.mapper"},
+//        sqlSessionTemplateRef = "sqlSessionTemplate")
 @EnableConfigurationProperties(MybatisProperties.class)
 public class DataSourceFactory {
 
@@ -57,6 +57,26 @@ public class DataSourceFactory {
     @ConfigurationProperties("spring.datasource.druid.slave2")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave2", name = "enabled", havingValue = "true")
     public DataSource druidDataSourceSlave2() {
+        return new DruidXADataSource();
+    }
+
+    /***
+     * 创建 DruidXADataSource 4
+     */
+    @Bean("druidDataSourceSlave3")
+    @ConfigurationProperties("spring.datasource.druid.slave3")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave3", name = "enabled", havingValue = "true")
+    public DataSource druidDataSourceSlave3() {
+        return new DruidXADataSource();
+    }
+
+    /***
+     * 创建 DruidXADataSource 5
+     */
+    @Bean("druidDataSourceSlave4")
+    @ConfigurationProperties("spring.datasource.druid.slave4")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave4", name = "enabled", havingValue = "true")
+    public DataSource druidDataSourceSlave4() {
         return new DruidXADataSource();
     }
 
@@ -112,6 +132,42 @@ public class DataSourceFactory {
         return sourceBean;
     }
 
+    /**
+     * 创建支持XA事务的Atomikos数据源3
+     */
+    @Bean("dataSourceSlave3")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave3", name =
+            "enabled", havingValue = "true")
+    public DataSource dataSourceSlave3(@Qualifier("druidDataSourceSlave3") DataSource druidDataSourceSlave3) {
+        AtomikosDataSourceBean sourceBean = new AtomikosDataSourceBean();
+        sourceBean.setMaxPoolSize(((DruidXADataSource) druidDataSourceSlave3).getMaxActive());
+        sourceBean.setMinPoolSize(((DruidXADataSource) druidDataSourceSlave3).getMinIdle());
+        sourceBean.setMaxLifetime((int) ((DruidXADataSource) druidDataSourceSlave3).getMaxWait());
+        sourceBean.setBorrowConnectionTimeout((int) (((DruidXADataSource) druidDataSourceSlave3).getMinEvictableIdleTimeMillis() / 1000));
+        sourceBean.setTestQuery(((DruidXADataSource) druidDataSourceSlave3).getValidationQuery());
+        sourceBean.setXaDataSource((DruidXADataSource) druidDataSourceSlave3);
+        sourceBean.setUniqueResourceName("slave3");
+        return sourceBean;
+    }
+
+    /**
+     * 创建支持XA事务的Atomikos数据源3
+     */
+    @Bean("dataSourceSlave4")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave4", name =
+            "enabled", havingValue = "true")
+    public DataSource dataSourceSlave4(@Qualifier("druidDataSourceSlave4") DataSource druidDataSourceSlave4) {
+        AtomikosDataSourceBean sourceBean = new AtomikosDataSourceBean();
+        sourceBean.setMaxPoolSize(((DruidXADataSource) druidDataSourceSlave4).getMaxActive());
+        sourceBean.setMinPoolSize(((DruidXADataSource) druidDataSourceSlave4).getMinIdle());
+        sourceBean.setMaxLifetime((int) ((DruidXADataSource) druidDataSourceSlave4).getMaxWait());
+        sourceBean.setBorrowConnectionTimeout((int) (((DruidXADataSource) druidDataSourceSlave4).getMinEvictableIdleTimeMillis() / 1000));
+        sourceBean.setTestQuery(((DruidXADataSource) druidDataSourceSlave4).getValidationQuery());
+        sourceBean.setXaDataSource((DruidXADataSource) druidDataSourceSlave4);
+        sourceBean.setUniqueResourceName("slave4");
+        return sourceBean;
+    }
+
 
     /**
      * @param dataSourceMaster 数据源1
@@ -147,6 +203,29 @@ public class DataSourceFactory {
         return createSqlSessionFactory(dataSourceSlave2, mybatisProperties);
     }
 
+    /**
+     * @param dataSourceSlave3 数据源2
+     * @return 数据源2的会话工厂
+     */
+    @Bean("sqlSessionFactorySlave3")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave3", name =
+            "enabled", havingValue = "true")
+    public SqlSessionFactory sqlSessionFactorySlave3(@Qualifier("dataSourceSlave3") DataSource dataSourceSlave3, MybatisProperties mybatisProperties)
+            throws Exception {
+        return createSqlSessionFactory(dataSourceSlave3, mybatisProperties);
+    }
+
+    /**
+     * @param dataSourceSlave4 数据源2
+     * @return 数据源2的会话工厂
+     */
+    @Bean("sqlSessionFactorySlave4")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.slave4", name ="enabled", havingValue = "true")
+    public SqlSessionFactory sqlSessionFactorySlave4(@Qualifier("dataSourceSlave4") DataSource dataSourceSlave4,MybatisProperties mybatisProperties)
+            throws Exception {
+        return createSqlSessionFactory(dataSourceSlave4, mybatisProperties);
+    }
+
 
     /***
      * sqlSessionTemplate与Spring事务管理一起使用，以确保使用的实际SqlSession是与当前Spring事务关联的,
@@ -156,16 +235,22 @@ public class DataSourceFactory {
     @Bean
     public CustomSqlSessionTemplate sqlSessionTemplate(@Qualifier("sqlSessionFactoryMaster") SqlSessionFactory sqlSessionFactoryMaster) {
 
-
         Map<Object, SqlSessionFactory> sqlSessionFactoryMap = new HashMap<>();
+
         sqlSessionFactoryMap.put(DBConstant.MASTER, sqlSessionFactoryMaster);
 
-        setSqlSession(sqlSessionFactoryMap, DBConstant.SLAVE1, "sqlSessionFactorySlave1");
+        setSqlSession(sqlSessionFactoryMap, DBConstant.SLAVE1,"sqlSessionFactorySlave1");
 
-        setSqlSession(sqlSessionFactoryMap, DBConstant.SLAVE2, "sqlSessionFactorySlave2");
+        setSqlSession(sqlSessionFactoryMap, DBConstant.SLAVE2,"sqlSessionFactorySlave2");
+
+        setSqlSession(sqlSessionFactoryMap, DBConstant.SLAVE3,"sqlSessionFactorySlave3");
+
+        setSqlSession(sqlSessionFactoryMap, DBConstant.SLAVE4, "sqlSessionFactorySlave4");
 
         CustomSqlSessionTemplate customSqlSessionTemplate = new CustomSqlSessionTemplate(sqlSessionFactoryMaster);
+
         customSqlSessionTemplate.setTargetSqlSessionFactories(sqlSessionFactoryMap);
+
         return customSqlSessionTemplate;
     }
 
@@ -199,6 +284,7 @@ public class DataSourceFactory {
     }
 
     /**
+     /**
      * 设置数据源
      *
      * @param targetsetSqlSessions 备选数据源集合
