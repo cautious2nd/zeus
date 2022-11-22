@@ -4,8 +4,7 @@ import com.scaffold.file.decode.model.DecodeModel;
 
 import java.util.stream.Stream;
 
-public class ExcelDecodeHandler implements  DecodeHandler  {
-
+public class ExcelDecodeHandler implements DecodeHandler {
 
 
     @Override
@@ -15,7 +14,7 @@ public class ExcelDecodeHandler implements  DecodeHandler  {
         return decodeModel;
     }
 
-    private Object analysis(String body){
+    private Object analysis(String body) {
 
         Stream.of(body);
 

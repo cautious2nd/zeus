@@ -3,10 +3,8 @@ package com.scaffold.file.excel.util;
 import com.scaffold.file.excel.annotation.ExcelColumnName;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.scaffold.common.annotation.AnnotationUtils;
 import org.scaffold.common.reflect.ReflectUtil;
@@ -69,7 +67,7 @@ public class ExcelUtils {
                         for (Field field : fields) {
                             if (field.getAnnotation(ExcelColumnName.class) != null) {
                                 Object temp = AnnotationUtils.getAnnotationValue(field, ExcelColumnName.class, "value");
-                                if (temp != null && temp.equals(StringUtils.h2s(columnNames[cellNum]))) {
+                                if (temp != null && temp.equals(columnNames[cellNum])) {
                                     ReflectUtil.setFieldValue(t, field.getName(), getValue(cell));
                                     break;
                                 }
@@ -101,22 +99,17 @@ public class ExcelUtils {
         } catch (IllegalAccessException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidFormatException e) {
-            throw new RuntimeException(e);
         }
 
         return null;
     }
 
     private static String getValue(Cell cell) {
-        if (cell.getCellTypeEnum() == CellType.BOOLEAN) {
+        if (cell.getCellType() == CellType.BOOLEAN) {
             return String.valueOf(cell.getBooleanCellValue());
-        } else if (cell.getCellTypeEnum() == CellType.NUMERIC) {
-            return String.valueOf(cell.getNumericCellValue());
+        } else if (cell.getCellType() == CellType.NUMERIC) {
+
+            return  ((XSSFCell) cell).getRawValue();
         } else {
             return String.valueOf(cell.getStringCellValue());
         }
