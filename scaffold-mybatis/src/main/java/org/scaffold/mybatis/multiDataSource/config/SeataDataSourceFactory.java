@@ -40,7 +40,7 @@ public class SeataDataSourceFactory {
      * 创建 DruidXADataSource 1 用@ConfigurationProperties自动配置属性
      */
     @Bean("originMaster")
-    @ConfigurationProperties("spring.datasource.druid.master")
+    @ConfigurationProperties(prefix ="spring.datasource.druid.master")
     public DataSource originMaster() {
         return new DruidDataSource();
     }
