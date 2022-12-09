@@ -6,12 +6,12 @@
 **/
 package org.scaffold.common.security.jwt;
 
+import org.scaffold.common.json.GsonUtils;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import org.scaffold.common.json.GsonUtils;
 
 public class JWTPayloadBuilder {
 

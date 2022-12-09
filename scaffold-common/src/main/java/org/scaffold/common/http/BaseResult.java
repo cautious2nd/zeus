@@ -6,9 +6,9 @@
 **/
 package org.scaffold.common.http;
 
-import java.io.Serializable;
-
 import org.scaffold.common.http.result.ResultStatus;
+
+import java.io.Serializable;
 
 public class BaseResult<T> implements Serializable {
 	/**

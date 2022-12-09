@@ -6,11 +6,10 @@
 **/
 package org.scaffold.feign;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import feign.Response;
 import feign.codec.ErrorDecoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ScaffoldErrorDecoder extends ErrorDecoder.Default {
 

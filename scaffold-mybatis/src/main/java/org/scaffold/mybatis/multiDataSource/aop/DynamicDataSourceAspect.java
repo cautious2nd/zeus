@@ -1,8 +1,10 @@
 package org.scaffold.mybatis.multiDataSource.aop;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.scaffold.mybatis.multiDataSource.config.DataSourceContextHolder;
 import org.scaffold.mybatis.multiDataSource.config.ZeusDataSource;
@@ -11,8 +13,6 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Objects;
 
 /**
