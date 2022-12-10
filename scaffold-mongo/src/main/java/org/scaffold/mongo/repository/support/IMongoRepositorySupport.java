@@ -17,8 +17,10 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.json.JsonMode;
 import org.bson.json.JsonWriterSettings;
+import org.scaffold.common.annotation.AnnotationUtils;
 import org.scaffold.common.annotation.MongoWriteIgnore;
 import org.scaffold.common.json.GsonUtils;
+import org.scaffold.common.reflect.ReflectUtil;
 import org.scaffold.logger.log.ScaffoldLogger;
 import org.scaffold.mongo.service.page.Page;
 
@@ -269,7 +271,7 @@ public interface IMongoRepositorySupport {
 
 		/**
 		 * 升序
-		 * 
+		 *
 		 * @return
 		 */
 		default int up() {
@@ -278,7 +280,7 @@ public interface IMongoRepositorySupport {
 
 		/**
 		 * 降序
-		 * 
+		 *
 		 * @return
 		 */
 		default int down() {
