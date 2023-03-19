@@ -2,8 +2,7 @@
  * Author : chiziyue
  * Date : 2022年5月15日 下午9:40:47
  * Title : org.scaffold.mongo.service.support.MongoRepositorySupport.java
- *
-**/
+ **/
 package org.scaffold.mongo.repository.support;
 
 import com.mongodb.bulk.BulkWriteResult;
@@ -29,254 +28,254 @@ import java.util.*;
 
 public interface IMongoRepositorySupport {
 
-	static final ScaffoldLogger SCAFFOLD_LOGGER = new ScaffoldLogger("MongoRepository ");
-	static final String separatorChar = "#";
+    static final ScaffoldLogger SCAFFOLD_LOGGER = new ScaffoldLogger("MongoRepository ");
+    static final String separatorChar = "#";
 
-	MongoCollection<Document> getMongoCollection(String collectionName);
+    MongoCollection<Document> getMongoCollection(String collectionName);
 
-	public String getCollectionName(String mon);
+    public String getCollectionName(String mon);
 
-	default String generateCollectionName(String... params) {
-		return String.join(separatorChar, params);
-	}
+    default String generateCollectionName(String... params) {
+        return String.join(separatorChar, params);
+    }
 
-	default String generateCollectionName(String mon, Class<?> clazz) {
-		return String.join(separatorChar, mon, (String) AnnotationUtils.getAnnotationValue(clazz,
-				org.springframework.data.mongodb.core.mapping.Document.class, "collection"));
-	}
+    default String generateCollectionName(String mon, Class<?> clazz) {
+        return String.join(separatorChar, mon, (String) AnnotationUtils.getAnnotationValue(clazz,
+                org.springframework.data.mongodb.core.mapping.Document.class, "collection"));
+    }
 
-	default BulkWriteResult bulkWrite(List<WriteModel<Document>> entitys, String mon) {
-		return getMongoCollection(getCollectionName(mon)).bulkWrite(entitys);
-	}
+    default BulkWriteResult bulkWrite(List<WriteModel<Document>> entitys, String mon) {
+        return getMongoCollection(getCollectionName(mon)).bulkWrite(entitys);
+    }
 
-	default List<WriteModel<Document>> insertMany(List<Document> documents) {
-		List<WriteModel<Document>> requests = new ArrayList<>();
-		documents.stream().forEach(d -> {
-			InsertOneModel<Document> insertOneModel = new InsertOneModel<Document>(d);
-			requests.add(insertOneModel);
-		});
-		return requests;
-	}
+    default List<WriteModel<Document>> insertMany(List<Document> documents) {
+        List<WriteModel<Document>> requests = new ArrayList<>();
+        documents.stream().forEach(d -> {
+            InsertOneModel<Document> insertOneModel = new InsertOneModel<Document>(d);
+            requests.add(insertOneModel);
+        });
+        return requests;
+    }
 
-	default long deleteMany(String mon, MongoDeleteFilter filter) {
-		MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
-		DeleteResult deleteResult = collection.deleteMany(filter.filter());
-		SCAFFOLD_LOGGER.info(collection.getNamespace().getFullName() + "::deleteMany::" + filter.filter().toString()
-				+ "====" + deleteResult.getDeletedCount());
-		return deleteResult.getDeletedCount();
-	}
+    default long deleteMany(String mon, MongoDeleteFilter filter) {
+        MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
+        DeleteResult deleteResult = collection.deleteMany(filter.filter());
+        SCAFFOLD_LOGGER.info(collection.getNamespace().getFullName() + "::deleteMany::" + filter.filter().toString()
+                + "====" + deleteResult.getDeletedCount());
+        return deleteResult.getDeletedCount();
+    }
 
-	default List<WriteModel<Document>> deleteMany(List<Document> documents, MongoDeleteFilter2 mongoDeleteFilter2) {
-		List<WriteModel<Document>> requests = new LinkedList<>();
-		documents.stream().forEach(d -> {
-			DeleteOneModel<Document> deleteOneModel = new DeleteOneModel<>(mongoDeleteFilter2.filter(d));
-			requests.add(deleteOneModel);
-		});
-		return requests;
-	}
+    default List<WriteModel<Document>> deleteMany(List<Document> documents, MongoDeleteFilter2 mongoDeleteFilter2) {
+        List<WriteModel<Document>> requests = new LinkedList<>();
+        documents.stream().forEach(d -> {
+            DeleteOneModel<Document> deleteOneModel = new DeleteOneModel<>(mongoDeleteFilter2.filter(d));
+            requests.add(deleteOneModel);
+        });
+        return requests;
+    }
 
-	default <V> List<WriteModel<Document>> updateMany2(List<V> params, MongoUpdateFilter2<V> mongoUpdateFilter,
-			boolean isUpsert) {
-		List<WriteModel<Document>> requests = new ArrayList<>();
-		params.stream().forEach(p -> {
-			Bson filter = mongoUpdateFilter.filter(p);
-			Bson update = mongoUpdateFilter.update(mongoUpdateFilter.setUpdate(p));
+    default <V> List<WriteModel<Document>> updateMany2(List<V> params, MongoUpdateFilter2<V> mongoUpdateFilter,
+                                                       boolean isUpsert) {
+        List<WriteModel<Document>> requests = new ArrayList<>();
+        params.stream().forEach(p -> {
+            Bson filter = mongoUpdateFilter.filter(p);
+            Bson update = mongoUpdateFilter.update(mongoUpdateFilter.setUpdate(p));
 //			UpdateOneModel<Document> updateOneModel = new UpdateOneModel<>(filter, update,
 //					new UpdateOptions().upsert(isUpsert));
 
-			UpdateManyModel<Document> updateManyModel = new UpdateManyModel<>(filter, update,
-					new UpdateOptions().upsert(isUpsert));
+            UpdateManyModel<Document> updateManyModel = new UpdateManyModel<>(filter, update,
+                    new UpdateOptions().upsert(isUpsert));
 
-			SCAFFOLD_LOGGER.debug("filter : " + filter + "   update:" + update);
+            SCAFFOLD_LOGGER.debug("filter : " + filter + "   update:" + update);
 
-			requests.add(updateManyModel);
-		});
+            requests.add(updateManyModel);
+        });
 
-		return requests;
-	}
+        return requests;
+    }
 
-	default List<WriteModel<Document>> updateMany(List<Document> documents, MongoUpdateFilter mongoUpdateFilter,
-			boolean isUpsert) {
-		List<WriteModel<Document>> requests = new ArrayList<>();
-		documents.stream().forEach(d -> {
-			Bson filter = mongoUpdateFilter.filter(d);
-			Bson update = mongoUpdateFilter.update(d);
-			UpdateOneModel<Document> updateOneModel = new UpdateOneModel<>(filter, update,
-					new UpdateOptions().upsert(isUpsert));
+    default List<WriteModel<Document>> updateMany(List<Document> documents, MongoUpdateFilter mongoUpdateFilter,
+                                                  boolean isUpsert) {
+        List<WriteModel<Document>> requests = new ArrayList<>();
+        documents.stream().forEach(d -> {
+            Bson filter = mongoUpdateFilter.filter(d);
+            Bson update = mongoUpdateFilter.update(d);
+            UpdateOneModel<Document> updateOneModel = new UpdateOneModel<>(filter, update,
+                    new UpdateOptions().upsert(isUpsert));
 
-			requests.add(updateOneModel);
-		});
-		return requests;
-	}
+            requests.add(updateOneModel);
+        });
+        return requests;
+    }
 
-	default List<WriteModel<Document>> updateMany(List<Document> documents, MongoUpdateFilter mongoUpdateFilter,
-			boolean isUpsert, List<? extends Bson> arrayFilters) {
-		List<WriteModel<Document>> requests = new ArrayList<>();
-		documents.stream().forEach(d -> {
-			Bson filter = mongoUpdateFilter.filter(d);
-			Bson update = mongoUpdateFilter.update(d);
-			UpdateOneModel<Document> updateOneModel = new UpdateOneModel<>(filter, update,
-					new UpdateOptions().upsert(isUpsert).arrayFilters(arrayFilters));
+    default List<WriteModel<Document>> updateMany(List<Document> documents, MongoUpdateFilter mongoUpdateFilter,
+                                                  boolean isUpsert, List<? extends Bson> arrayFilters) {
+        List<WriteModel<Document>> requests = new ArrayList<>();
+        documents.stream().forEach(d -> {
+            Bson filter = mongoUpdateFilter.filter(d);
+            Bson update = mongoUpdateFilter.update(d);
+            UpdateOneModel<Document> updateOneModel = new UpdateOneModel<>(filter, update,
+                    new UpdateOptions().upsert(isUpsert).arrayFilters(arrayFilters));
 
-			requests.add(updateOneModel);
-		});
-		return requests;
-	}
+            requests.add(updateOneModel);
+        });
+        return requests;
+    }
 
-	default List<Document> toDocuments(List<?> list) {
-		List<Document> documents = Collections.synchronizedList(new ArrayList<>());
-		list.parallelStream().forEach(m -> {
+    default List<Document> toDocuments(List<?> list) {
+        List<Document> documents = Collections.synchronizedList(new ArrayList<>());
+        list.parallelStream().forEach(m -> {
 //			documents.add(Document.parse(GsonUtils.getIgnorReadGson().toJson(m)));
-			documents.add(Document.parse(GsonUtils.get().toJson(m)));
-		});
-		return documents;
-	}
+            documents.add(Document.parse(GsonUtils.get().toJson(m)));
+        });
+        return documents;
+    }
 
-	default <T> List<Document> toDocuments(List<T> list, ToDocumentCallBack<T> callBack) {
-		List<Document> documents = Collections.synchronizedList(new ArrayList<>());
-		list.parallelStream().forEach(m -> {
+    default <T> List<Document> toDocuments(List<T> list, ToDocumentCallBack<T> callBack) {
+        List<Document> documents = Collections.synchronizedList(new ArrayList<>());
+        list.parallelStream().forEach(m -> {
 //			documents.add(Document.parse(GsonUtils.toJsonIgnoreNull(callBack.call(m))));
-			documents.add(Document.parse(GsonUtils.get().toJson(callBack.call(m))));
-		});
-		return documents;
-	}
+            documents.add(Document.parse(GsonUtils.get().toJson(callBack.call(m))));
+        });
+        return documents;
+    }
 
-	default <T> List<Document> toDocuments(Collection<T> list, ToDocumentCallBack<T> callBack) {
-		List<Document> documents = Collections.synchronizedList(new ArrayList<>());
-		list.parallelStream().forEach(m -> {
+    default <T> List<Document> toDocuments(Collection<T> list, ToDocumentCallBack<T> callBack) {
+        List<Document> documents = Collections.synchronizedList(new ArrayList<>());
+        list.parallelStream().forEach(m -> {
 //			documents.add(Document.parse(JSONUtil.toJsonString(callBack.call(m))));
-			documents.add(Document.parse(GsonUtils.get().toJson(callBack.call(m))));
-		});
-		return documents;
-	}
+            documents.add(Document.parse(GsonUtils.get().toJson(callBack.call(m))));
+        });
+        return documents;
+    }
 
-	default void insertMany(String collectionName, List<Document> documents) {
-		getMongoCollection(collectionName).insertMany(documents);
-	}
+    default void insertMany(String collectionName, List<Document> documents) {
+        getMongoCollection(collectionName).insertMany(documents);
+    }
 
-	default List<String> findMany(String mon, MongoFindFilter filter) {
-		FindIterable<String> findIterable = getMongoCollection(getCollectionName(mon)).find(filter.filter(),
-				String.class);
-		MongoCursor<String> mongoCursor = findIterable.iterator();
-		List<String> result = new ArrayList<>();
-		while (mongoCursor.hasNext()) {
-			result.add(mongoCursor.next());
-		}
-		return result;
-	}
+    default List<String> findMany(String mon, MongoFindFilter filter) {
+        FindIterable<String> findIterable = getMongoCollection(getCollectionName(mon)).find(filter.filter(),
+                String.class);
+        MongoCursor<String> mongoCursor = findIterable.iterator();
+        List<String> result = new ArrayList<>();
+        while (mongoCursor.hasNext()) {
+            result.add(mongoCursor.next());
+        }
+        return result;
+    }
 
-	default <T> List<T> findManySort(String mon, MongoFindFilter filter, Class<T> clazz) {
-		MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
-		FindIterable<Document> findIterable = collection.find(filter.filter()).sort(filter.getSort());
-		MongoCursor<Document> mongoCursor = findIterable.iterator();
-		List<T> result = new ArrayList<>();
-		while (mongoCursor.hasNext()) {
-			Document document = mongoCursor.next();
-			result.add(GsonUtils.get().readValue(
-					document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), clazz));
-		}
+    default <T> List<T> findManySort(String mon, MongoFindFilter filter, Class<T> clazz) {
+        MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
+        FindIterable<Document> findIterable = collection.find(filter.filter()).sort(filter.getSort());
+        MongoCursor<Document> mongoCursor = findIterable.iterator();
+        List<T> result = new ArrayList<>();
+        while (mongoCursor.hasNext()) {
+            Document document = mongoCursor.next();
+            result.add(GsonUtils.get().readValue(
+                    document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), clazz));
+        }
 
-		SCAFFOLD_LOGGER.debug(collection.getNamespace().getFullName() + "::findMany::" + filter.filter().toString()
-				+ "====" + result.size());
+        SCAFFOLD_LOGGER.debug(collection.getNamespace().getFullName() + "::findMany::" + filter.filter().toString()
+                + "====" + result.size());
 
-		return result;
-	}
+        return result;
+    }
 
-	default <T> List<T> findManyByPage(String mon, MongoFindFilter filter, Class<T> clazz) {
-		MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
-		FindIterable<Document> findIterable = null;
-		if (filter.getPage() != null && filter.getPage().getPageSize() != -1) {
-			findIterable = collection.find(filter.filter()).sort(filter.getSort())
-					.skip(Math.multiplyExact(filter.getPage().getPageSize(), filter.getPage().getPageCurrent() - 1))
-					.limit(filter.getPage().getPageSize());
-		} else {
-			findIterable = collection.find(filter.filter()).sort(filter.getSort());
-		}
-		long count = collection.countDocuments(filter.filter());
-		filter.getPage().setTotalRow((int) count);
-		MongoCursor<Document> mongoCursor = findIterable.iterator();
-		List<T> result = new ArrayList<>();
-		while (mongoCursor.hasNext()) {
-			Document document = mongoCursor.next();
-			result.add(GsonUtils.get().readValue(
-					document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), clazz));
-		}
+    default <T> List<T> findManyByPage(String mon, MongoFindFilter filter, Class<T> clazz) {
+        MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
+        FindIterable<Document> findIterable = null;
+        if (filter.getPage() != null && filter.getPage().getPageSize() != -1) {
+            findIterable = collection.find(filter.filter()).sort(filter.getSort())
+                    .skip(Math.multiplyExact(filter.getPage().getPageSize(), filter.getPage().getPageCurrent() - 1))
+                    .limit(filter.getPage().getPageSize());
+        } else {
+            findIterable = collection.find(filter.filter()).sort(filter.getSort());
+        }
+        long count = collection.countDocuments(filter.filter());
+        filter.getPage().setTotalRow((int) count);
+        MongoCursor<Document> mongoCursor = findIterable.iterator();
+        List<T> result = new ArrayList<>();
+        while (mongoCursor.hasNext()) {
+            Document document = mongoCursor.next();
+            result.add(GsonUtils.get().readValue(
+                    document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), clazz));
+        }
 
-		SCAFFOLD_LOGGER.debug(collection.getNamespace().getFullName() + "::findManyByPage::"
-				+ filter.filter().toString() + "====" + result.size());
-		return result;
-	}
+        SCAFFOLD_LOGGER.debug(collection.getNamespace().getFullName() + "::findManyByPage::"
+                + filter.filter().toString() + "====" + result.size());
+        return result;
+    }
 
-	default <T> List<T> findMany(String mon, MongoFindFilter filter, Class<T> clazz) {
-		MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
-		FindIterable<Document> findIterable = collection.find(filter.filter());
-		MongoCursor<Document> mongoCursor = findIterable.iterator();
-		List<T> result = new ArrayList<>();
-		List<String> removeList = new ArrayList<>();
-		Field[] fields = ReflectUtil.getFields(clazz);
-		for (Field field : fields) {
-			if (field.isAnnotationPresent(MongoWriteIgnore.class)) {
-				removeList.add(field.getName());
-			}
-		}
-		while (mongoCursor.hasNext()) {
-			Document document = mongoCursor.next();
-			removeList.forEach(name -> {
-				document.remove(name);
-			});
-			String json = document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build());
-			result.add(GsonUtils.get().readValue(json, clazz));
-		}
+    default <T> List<T> findMany(String mon, MongoFindFilter filter, Class<T> clazz) {
+        MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
+        FindIterable<Document> findIterable = collection.find(filter.filter());
+        MongoCursor<Document> mongoCursor = findIterable.iterator();
+        List<T> result = new ArrayList<>();
+        List<String> removeList = new ArrayList<>();
+        Field[] fields = ReflectUtil.getFields(clazz);
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(MongoWriteIgnore.class)) {
+                removeList.add(field.getName());
+            }
+        }
+        while (mongoCursor.hasNext()) {
+            Document document = mongoCursor.next();
+            removeList.forEach(name -> {
+                document.remove(name);
+            });
+            String json = document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build());
+            result.add(GsonUtils.get().readValue(json, clazz));
+        }
 
-		SCAFFOLD_LOGGER.info(collection.getNamespace().getFullName() + "::findMany::" + filter.filter().toString()
-				+ "====" + result.size());
-		return result;
-	}
+        SCAFFOLD_LOGGER.info(collection.getNamespace().getFullName() + "::findMany::" + filter.filter().toString()
+                + "====" + result.size());
+        return result;
+    }
 
-	default long getCount(String mon, MongoFindFilter filter) {
-		MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
-		return collection.countDocuments(filter.filter());
-	}
+    default long getCount(String mon, MongoFindFilter filter) {
+        MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
+        return collection.countDocuments(filter.filter());
+    }
 
-	default List<Document> aggregate(String mon, MongoAggregateFilter filter) {
-		MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
-		List<? extends Bson> pipeline = filter.getPipeline();
+    default List<Document> aggregate(String mon, MongoAggregateFilter filter) {
+        MongoCollection<Document> collection = getMongoCollection(getCollectionName(mon));
+        List<? extends Bson> pipeline = filter.getPipeline();
 
-		AggregateIterable<Document> aggregateIterable = collection.aggregate(pipeline);
+        AggregateIterable<Document> aggregateIterable = collection.aggregate(pipeline);
 
-		MongoCursor<Document> mongoCursor = aggregateIterable.iterator();
+        MongoCursor<Document> mongoCursor = aggregateIterable.iterator();
 
-		List<Document> result = new ArrayList<>();
-		while (mongoCursor.hasNext()) {
-			Document document = mongoCursor.next();
-			result.add(document);
-		}
+        List<Document> result = new ArrayList<>();
+        while (mongoCursor.hasNext()) {
+            Document document = mongoCursor.next();
+            result.add(document);
+        }
 
-		SCAFFOLD_LOGGER
-				.info(collection.getNamespace().getFullName() + ":aggregate:" + filter.info() + "====" + result.size());
+        SCAFFOLD_LOGGER
+                .info(collection.getNamespace().getFullName() + ":aggregate:" + filter.info() + "====" + result.size());
 
-		return result;
-	}
+        return result;
+    }
 
-	interface MongoFindFilter {
-		Bson filter();
+    interface MongoFindFilter {
+        Bson filter();
 
-		default Bson getSort() {
-			return new Document("id", 1);
-		}
+        default Bson getSort() {
+            return new Document("id", 1);
+        }
 
-		default Page getPage() {
-			return null;
-		}
+        default Page getPage() {
+            return null;
+        }
 
-		/**
-		 * 升序
-		 *
-		 * @return
-		 */
-		default int up() {
-			return 1;
-		}
+        /**
+         * 升序
+         *
+         * @return
+         */
+        default int up() {
+            return 1;
+        }
 
 		/**
 		 * 降序
@@ -288,115 +287,117 @@ public interface IMongoRepositorySupport {
 		}
 	}
 
-	interface MongoUpdateFilter2<T> {
-		Bson filter(T t);
+    interface MongoUpdateFilter2<T> {
+        Bson filter(T t);
 
-		Document setUpdate(T t);
+        Document setUpdate(T t);
 
-		default Bson update(Document param) {
-			return new Document("$set", param);
-		}
+        default Bson update(Document param) {
+            return new Document("$set", param);
+        }
 
-	}
+    }
 
-	interface MongoUpdateFilter {
-		Bson filter(Document param);
+    interface MongoUpdateFilter {
+        Bson filter(Document param);
 
-		default Bson update(Document param) {
-			return new Document("$set", param);
-		}
+        default Bson update(Document param) {
+            return new Document("$set", param);
+        }
 
-	}
+    }
 
-	interface MongoDeleteFilter {
-		Bson filter();
-	}
+    interface MongoDeleteFilter {
+        Bson filter();
+    }
 
-	interface MongoDeleteFilter2 {
+    interface MongoDeleteFilter2 {
 
-		Bson filter(Document param);
-	}
+        Bson filter(Document param);
+    }
 
-	interface MongoAggregateFilter {
+    interface MongoAggregateFilter {
 
-		List<? extends Bson> getPipeline();
+        List<? extends Bson> getPipeline();
 
-		String info();
+        String info();
 
-		Bson setMatch();
+        Bson setMatch();
 
-		default Bson getMatch() {
-			return new Document("$match", setMatch());
-		}
+        default Bson getMatch() {
+            return new Document("$match", setMatch());
+        }
 
-	}
+    }
 
-	interface MongoAggregateGroupFilter extends MongoAggregateFilter {
-		default List<? extends Bson> getPipeline() {
-			List<Bson> pipeLine = new LinkedList<>();
-			pipeLine.add(getMatch());
-			pipeLine.add(getGroup());
-			return pipeLine;
-		};
+    interface MongoAggregateGroupFilter extends MongoAggregateFilter {
+        default List<? extends Bson> getPipeline() {
+            List<Bson> pipeLine = new LinkedList<>();
+            pipeLine.add(getMatch());
+            pipeLine.add(getGroup());
+            return pipeLine;
+        }
 
-		Bson setGroup();
+        ;
 
-		default Bson getGroup() {
-			return new Document("$group", setGroup());
-		}
+        Bson setGroup();
 
-		@Override
-		default String info() {
-			return getMatch().toString() + "+" + getGroup();
-		}
-	}
+        default Bson getGroup() {
+            return new Document("$group", setGroup());
+        }
 
-	interface MongoAggregateGraphLookupFilter extends MongoAggregateFilter {
-		Bson setGraphLookup();
+        @Override
+        default String info() {
+            return getMatch().toString() + "+" + getGroup();
+        }
+    }
 
-		default Bson getGraphLookup() {
-			return new Document("$graphLookup", setGraphLookup());
-		}
+    interface MongoAggregateGraphLookupFilter extends MongoAggregateFilter {
+        Bson setGraphLookup();
 
-		default List<? extends Bson> getPipeline() {
-			List<Bson> pipeLine = new LinkedList<>();
-			pipeLine.add(getMatch());
-			pipeLine.add(getGraphLookup());
-			return pipeLine;
-		}
+        default Bson getGraphLookup() {
+            return new Document("$graphLookup", setGraphLookup());
+        }
 
-		@Override
-		default String info() {
-			return getMatch().toString() + "+" + setGraphLookup();
-		}
-	}
+        default List<? extends Bson> getPipeline() {
+            List<Bson> pipeLine = new LinkedList<>();
+            pipeLine.add(getMatch());
+            pipeLine.add(getGraphLookup());
+            return pipeLine;
+        }
 
-	interface MongoAggregateLookupFilter extends MongoAggregateFilter {
+        @Override
+        default String info() {
+            return getMatch().toString() + "+" + setGraphLookup();
+        }
+    }
 
-		Bson setLookup();
+    interface MongoAggregateLookupFilter extends MongoAggregateFilter {
 
-		default Bson getLookup() {
-			return new Document("$lookup", setLookup());
-		}
+        Bson setLookup();
 
-		@Override
-		default List<? extends Bson> getPipeline() {
-			List<Bson> pipeLine = new LinkedList<>();
-			pipeLine.add(getLookup());
-			pipeLine.add(getMatch());
-			return pipeLine;
-		}
+        default Bson getLookup() {
+            return new Document("$lookup", setLookup());
+        }
 
-		@Override
-		default String info() {
+        @Override
+        default List<? extends Bson> getPipeline() {
+            List<Bson> pipeLine = new LinkedList<>();
+            pipeLine.add(getLookup());
+            pipeLine.add(getMatch());
+            return pipeLine;
+        }
+
+        @Override
+        default String info() {
 //			return GsonUtils.toJson(getPipeline());
-			return GsonUtils.get().toJson(getPipeline());
-		}
+            return GsonUtils.get().toJson(getPipeline());
+        }
 
-	}
+    }
 
-	interface ToDocumentCallBack<T> {
-		T call(T t);
-	}
+    interface ToDocumentCallBack<T> {
+        T call(T t);
+    }
 
 }
