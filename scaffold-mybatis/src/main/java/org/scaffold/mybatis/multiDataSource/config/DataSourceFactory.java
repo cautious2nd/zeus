@@ -35,7 +35,7 @@ public class DataSourceFactory {
      * 创建 DruidXADataSource 1 用@ConfigurationProperties自动配置属性
      */
     @Bean("druidDataSourceMaster")
-    @ConfigurationProperties("spring.datasource.druid.master")
+    @ConfigurationProperties(prefix ="spring.datasource.druid.master")
     public DataSource druidDataSourceMaster() {
         return new DruidXADataSource();
     }
