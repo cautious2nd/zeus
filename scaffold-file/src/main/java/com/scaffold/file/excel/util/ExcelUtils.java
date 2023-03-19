@@ -103,7 +103,7 @@ public class ExcelUtils {
         return null;
     }
 
-    public static <T> void write(String dirPath, Class<T> clazz, List<T> list) throws IOException {
+    public static <T> File write(String dirPath, Class<T> clazz, List<T> list) throws IOException {
         File dicFile = new File(dirPath);
         dicFile.mkdirs();
         File file = File.createTempFile("javaTemp" + System.currentTimeMillis(), ".xlsx", dicFile);
@@ -111,61 +111,52 @@ public class ExcelUtils {
         String[] columnNames = null;
         Field[] fields = clazz.getDeclaredFields();
         boolean isColumn = true;
-        try {
-            Workbook wb = null;
-            if (isExcel2003(file.getName())) {
-                wb = new HSSFWorkbook();
-            } else {
-                wb = new XSSFWorkbook();
-            }
-            CellStyle cellStyle = wb.createCellStyle();
-            cellStyle.setBorderBottom(BorderStyle.THIN);
-            cellStyle.setBorderLeft(BorderStyle.THIN);
-            cellStyle.setBorderRight(BorderStyle.THIN);
-            cellStyle.setBorderTop(BorderStyle.THIN);
+        Workbook wb = null;
+        if (isExcel2003(file.getName())) {
+            wb = new HSSFWorkbook();
+        } else {
+            wb = new XSSFWorkbook();
+        }
+        CellStyle cellStyle = wb.createCellStyle();
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setBorderTop(BorderStyle.THIN);
 
-            Font font = wb.createFont();
-            font.setFontName("宋体");
-            font.setFontHeightInPoints((short) 12);
-            cellStyle.setFont(font);
+        Font font = wb.createFont();
+        font.setFontName("宋体");
+        font.setFontHeightInPoints((short) 12);
+        cellStyle.setFont(font);
 
-            Sheet sheet = wb.createSheet();
-            List<Field> fieldList = Arrays.stream(fields).filter(field -> field.getAnnotation(ExcelColumnName.class) != null).collect(Collectors.toList());
-            Row row0 = sheet.createRow(0);;////第一行
-            for (int i = 0; i < fieldList.size(); i++) {
-                Field field = fields[i];
-                Cell cell = row0.createCell(i);
-                Object temp = AnnotationUtils.getAnnotationValue(field, ExcelColumnName.class, "value");
-                cell.setCellValue((String) temp);
+        Sheet sheet = wb.createSheet();
+        List<Field> fieldList = Arrays.stream(fields).filter(field -> field.getAnnotation(ExcelColumnName.class) != null).collect(Collectors.toList());
+        Row row0 = sheet.createRow(0);
+        ;////第一行
+        for (int i = 0; i < fieldList.size(); i++) {
+            Field field = fields[i];
+            Cell cell = row0.createCell(i);
+            Object temp = AnnotationUtils.getAnnotationValue(field, ExcelColumnName.class, "value");
+            cell.setCellValue((String) temp);
+            cell.setCellStyle(cellStyle);
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+            T t = list.get(i);
+            Row row = sheet.createRow(i + 1);//第一行
+            for (int ii = 0; ii < fieldList.size(); ii++) {
+                Field field = fields[ii];
+                Cell cell = row.createCell(ii);
+                cell.setCellValue(String.valueOf(ReflectUtil.getFieldValue(t, field.getName())));
                 cell.setCellStyle(cellStyle);
             }
-
-            for (int i = 0; i < list.size(); i++) {
-                T t = list.get(i);
-                Row row = sheet.createRow(i + 1);//第一行
-                for (int ii = 0; ii < fieldList.size(); ii++) {
-                    Field field = fields[ii];
-                    Cell cell = row.createCell(ii);
-                    cell.setCellValue(String.valueOf(ReflectUtil.getFieldValue(t, field.getName())));
-                    cell.setCellStyle(cellStyle);
-                }
-            }
-
-            OutputStream outputStream = null;
-            outputStream = new FileOutputStream(file);
-            wb.write(outputStream);
-            outputStream.close();
-
-
-
-
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
+
+        OutputStream outputStream = null;
+        outputStream = new FileOutputStream(file);
+        wb.write(outputStream);
+        outputStream.close();
+
+        return file;
     }
 
     private static String getValue(Cell cell) {
