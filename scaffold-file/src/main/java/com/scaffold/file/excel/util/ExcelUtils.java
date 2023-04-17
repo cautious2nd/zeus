@@ -10,13 +10,12 @@ import org.scaffold.common.annotation.AnnotationUtils;
 import org.scaffold.common.reflect.ReflectUtil;
 import org.scaffold.common.string.StringUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ExcelUtils {
 
@@ -104,12 +103,67 @@ public class ExcelUtils {
         return null;
     }
 
+    public static <T> File write(String dirPath, Class<T> clazz, List<T> list) throws IOException {
+        File dicFile = new File(dirPath);
+        dicFile.mkdirs();
+        File file = File.createTempFile("javaTemp" + System.currentTimeMillis(), ".xlsx", dicFile);
+
+        String[] columnNames = null;
+        Field[] fields = clazz.getDeclaredFields();
+        boolean isColumn = true;
+        Workbook wb = null;
+        if (isExcel2003(file.getName())) {
+            wb = new HSSFWorkbook();
+        } else {
+            wb = new XSSFWorkbook();
+        }
+        CellStyle cellStyle = wb.createCellStyle();
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setBorderTop(BorderStyle.THIN);
+
+        Font font = wb.createFont();
+        font.setFontName("宋体");
+        font.setFontHeightInPoints((short) 12);
+        cellStyle.setFont(font);
+
+        Sheet sheet = wb.createSheet();
+        List<Field> fieldList = Arrays.stream(fields).filter(field -> field.getAnnotation(ExcelColumnName.class) != null).collect(Collectors.toList());
+        Row row0 = sheet.createRow(0);//第一行
+        for (int i = 0; i < fieldList.size(); i++) {
+            Field field = fields[i];
+            Cell cell = row0.createCell(i);
+            Object temp = AnnotationUtils.getAnnotationValue(field, ExcelColumnName.class, "value");
+            cell.setCellValue((String) temp);
+            cell.setCellStyle(cellStyle);
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+            T t = list.get(i);
+            Row row = sheet.createRow(i + 1);//第一行
+            for (int ii = 0; ii < fieldList.size(); ii++) {
+                Field field = fields[ii];
+                Cell cell = row.createCell(ii);
+                cell.setCellValue(String.valueOf(ReflectUtil.getFieldValue(t, field.getName())));
+                cell.setCellStyle(cellStyle);
+            }
+        }
+
+        OutputStream outputStream = null;
+        outputStream = new FileOutputStream(file);
+        wb.write(outputStream);
+        outputStream.close();
+
+        return file;
+    }
+
     private static String getValue(Cell cell) {
         if (cell.getCellType() == CellType.BOOLEAN) {
             return String.valueOf(cell.getBooleanCellValue());
         } else if (cell.getCellType() == CellType.NUMERIC) {
 
-            return  ((XSSFCell) cell).getRawValue();
+            return ((XSSFCell) cell).getRawValue();
         } else {
             return String.valueOf(cell.getStringCellValue());
         }

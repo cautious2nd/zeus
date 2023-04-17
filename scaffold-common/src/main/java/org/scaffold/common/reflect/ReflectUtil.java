@@ -61,9 +61,26 @@ public class ReflectUtil {
         }
     }
 
+    public static Object getFieldValue(final Object obj, final String fieldName) {
+        Field field = getAccessibleField(obj, fieldName);
+
+        if (field == null) {
+            throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
+        }
+
+        Object result = null;
+        try {
+            result = field.get(obj);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
     /**
      * 循环向上转型, 获取对象的DeclaredField, 并强制设置为可访问.
-     *
+     * <p>
      * 如向上转型到Object仍无法找到, 返回null.
      */
     public static Field getAccessibleField(final Object obj, final String fieldName) {
@@ -107,7 +124,6 @@ public class ReflectUtil {
             method.setAccessible(true);
         }
     }
-
 
 
 }
