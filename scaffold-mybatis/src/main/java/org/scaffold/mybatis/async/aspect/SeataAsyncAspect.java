@@ -1,12 +1,11 @@
 package org.scaffold.mybatis.async.aspect;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.scaffold.mybatis.async.context.SeataAsyncCallInfo;
 import org.scaffold.mybatis.async.context.SeataAysncCallContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -19,8 +18,8 @@ import java.util.concurrent.ExecutionException;
  **/
 @Aspect
 @Component
+@Slf4j
 public class SeataAsyncAspect {
-    private static final Logger logger = LoggerFactory.getLogger(SeataAsyncAspect.class);
 
     @Around("@annotation(io.seata.spring.annotation.GlobalTransactional)")
     public Object aroundLogCalls(ProceedingJoinPoint pjp) throws Throwable {
@@ -44,7 +43,7 @@ public class SeataAsyncAspect {
                     callInfo.get();
                 } catch (Exception logEx) {
                     // 在catch里面捕捉到的异常可以直接消费掉
-                    logger.error("call exception ", logEx);
+                    log.error("call exception ", logEx);
                 }
             }
 

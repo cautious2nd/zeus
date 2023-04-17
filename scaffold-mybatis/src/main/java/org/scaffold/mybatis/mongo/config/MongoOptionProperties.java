@@ -176,4 +176,5 @@ public class MongoOptionProperties {
     public void setLocalThreshold(Integer localThreshold) {
         this.localThreshold = localThreshold;
     }
+
 }

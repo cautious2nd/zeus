@@ -1,24 +1,24 @@
 package org.scaffold.mybatis.async.util;
 
 import io.seata.core.context.RootContext;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.scaffold.mybatis.async.context.SeataAsyncCallInfo;
 import org.scaffold.mybatis.async.context.SeataAysncCallContext;
 import org.scaffold.mybatis.async.functional.AsyncNoRevFunction;
 import org.scaffold.mybatis.async.functional.AsyncRevFunction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.text.MessageFormat;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 @Component
+@Slf4j
 public class SeataAsyncUtil {
-    private static final Logger logger = LoggerFactory.getLogger(SeataAsyncUtil.class);
     private ExecutorService executor;
 
     public SeataAsyncUtil(@Value("${seata.async.thread-num:20}") int threadNum) {
@@ -30,13 +30,18 @@ public class SeataAsyncUtil {
 
         Future<T> future = executor.submit(() -> {
             if (StringUtils.isNotEmpty(xid)) {
-                logger.debug("xid is : {}", xid);
+                log.debug("xid is : {}", xid);
                 RootContext.bind(xid);
             }
 
             try {
                 return func.apply();
-            } finally {
+            }catch (Exception e){
+                log.debug(MessageFormat.format("多线程异常,线程号{0},异常原因{1}",
+                        Thread.currentThread().getName(),e.getMessage()));
+             throw new Exception(MessageFormat.format("多线程异常,线程号{0},异常{1}",
+                     Thread.currentThread().getName(),e.getCause().getMessage()));
+            } finally{
                 if (null != RootContext.getXID()) {
                     RootContext.unbind();
                 }
@@ -51,7 +56,7 @@ public class SeataAsyncUtil {
                                                 String xid, CountDownLatch count) {
         Future<T> future = executor.submit(() -> {
             if (StringUtils.isNotEmpty(xid)) {
-                logger.debug("xid is : {}", xid);
+                log.debug("xid is : {}", xid);
                 RootContext.bind(xid);
             }
 
@@ -59,7 +64,13 @@ public class SeataAsyncUtil {
                 T t = func.apply();
                 count.countDown();
                 return t;
-            } finally {
+            } catch (Exception e){
+                count.countDown();
+                log.debug(MessageFormat.format("多线程异常,线程号{0},异常{1}",
+                        Thread.currentThread().getName(),e.getMessage()));
+                throw new Exception(MessageFormat.format("多线程异常,线程号{0},异常{1}",
+                        Thread.currentThread().getName(),e.getCause().getMessage()));
+            }finally {
                 if (null != RootContext.getXID()) {
                     RootContext.unbind();
                 }
@@ -76,14 +87,20 @@ public class SeataAsyncUtil {
 
         Future<Boolean> future = executor.submit(() -> {
             if (StringUtils.isNotEmpty(xid)) {
-                logger.debug("xid is : {}", xid);
+                log.debug("xid is : {}", xid);
                 RootContext.bind(xid);
             }
             try {
                 func.apply();
 
                 return true;
-            } finally {
+            } catch (Exception e){
+                log.debug(MessageFormat.format("多线程异常,线程号{0}，异常{1}",
+                        Thread.currentThread().getName(),e.getMessage()));
+                throw new Exception(MessageFormat.format("多线程异常,线程号{0},异常{1}",
+                        Thread.currentThread().getName(),e.getCause().getMessage()));
+
+            }finally {
                 if (null != RootContext.getXID()) {
                     RootContext.unbind();
                 }

@@ -9,6 +9,7 @@ import org.scaffold.mybatis.generator.util.string.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
@@ -18,6 +19,7 @@ import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,8 @@ import java.util.concurrent.TimeUnit;
 @ConfigurationProperties(prefix = "mongodb.dbconfig")
 @EnableConfigurationProperties(MongoOptionProperties.class)
 public class MongoPlusAutoConfiguration {
+    private ApplicationContext applicationContext;
+
     /**
      * 数据库
      */
@@ -57,7 +61,7 @@ public class MongoPlusAutoConfiguration {
     /**
      * 重写
      */
-    private Boolean retryWrites=true;
+    private Boolean retryWrites = true;
 
     /**
      * 连接配置
@@ -120,7 +124,7 @@ public class MongoPlusAutoConfiguration {
      * @return org.springframework.data.mongodb.MongoDbFactory
      */
     @Bean
-    public MongoClient  mongoClient() {
+    public MongoClient mongoClient() {
         List<ServerAddress> serverAddressArrayList = new ArrayList<>();
         for (String address : addresses) {
             String[] hostAndPort = address.split(":");
@@ -137,25 +141,25 @@ public class MongoPlusAutoConfiguration {
         mongoClientSettingBuilder.applyToConnectionPoolSettings(builder -> {
             builder.maxSize(mongoOptionProperties.getMaxConnectionPerHost());
             builder.minSize(mongoOptionProperties.getMinConnectionPerHost());
-            builder.maxWaitTime(mongoOptionProperties.getMaxWaitTime(),TimeUnit.MILLISECONDS);
-            builder.maxConnectionIdleTime(mongoOptionProperties.getMaxConnectionIdleTime(),TimeUnit.MILLISECONDS);
-            builder.maxConnectionLifeTime(mongoOptionProperties.getMaxConnectionLifeTime(),TimeUnit.MILLISECONDS);
+            builder.maxWaitTime(mongoOptionProperties.getMaxWaitTime(), TimeUnit.MILLISECONDS);
+            builder.maxConnectionIdleTime(mongoOptionProperties.getMaxConnectionIdleTime(), TimeUnit.MILLISECONDS);
+            builder.maxConnectionLifeTime(mongoOptionProperties.getMaxConnectionLifeTime(), TimeUnit.MILLISECONDS);
         });
         mongoClientSettingBuilder.applyToClusterSettings(builder -> {
             builder.serverSelectionTimeout(mongoOptionProperties.getServerSelectionTimeout(), TimeUnit.MILLISECONDS);
-            builder.localThreshold(mongoOptionProperties.getLocalThreshold(),TimeUnit.MILLISECONDS);
+            builder.localThreshold(mongoOptionProperties.getLocalThreshold(), TimeUnit.MILLISECONDS);
         });
         mongoClientSettingBuilder.applyToServerSettings(builder -> {
-            builder.heartbeatFrequency(mongoOptionProperties.getHeartbeatFrequency(),TimeUnit.MILLISECONDS);
-            builder.minHeartbeatFrequency(mongoOptionProperties.getHeartbeatFrequency(),TimeUnit.MILLISECONDS);
+            builder.heartbeatFrequency(mongoOptionProperties.getHeartbeatFrequency(), TimeUnit.MILLISECONDS);
+            builder.minHeartbeatFrequency(mongoOptionProperties.getHeartbeatFrequency(), TimeUnit.MILLISECONDS);
 
         });
         mongoClientSettingBuilder.applyToSocketSettings(builder -> {
-            builder.connectTimeout(mongoOptionProperties.getConnectTimeout(),TimeUnit.MILLISECONDS);
+            builder.connectTimeout(mongoOptionProperties.getConnectTimeout(), TimeUnit.MILLISECONDS);
         });
 
 
-        if(!(StringUtils.isEmpty(username) || StringUtils.isEmpty(password))) {
+        if (!(StringUtils.isEmpty(username) || StringUtils.isEmpty(password))) {
             mongoClientSettingBuilder.credential(MongoCredential.createScramSha1Credential(username, database, password.toCharArray()));
         }
         return MongoClients.create(mongoClientSettingBuilder.build());
@@ -164,22 +168,22 @@ public class MongoPlusAutoConfiguration {
 
     @Bean
     public SimpleMongoClientDatabaseFactory mongoClientDatabaseFactory(MongoClient mongoClient) {
-        return new SimpleMongoClientDatabaseFactory (mongoClient,database);
+        return new SimpleMongoClientDatabaseFactory(mongoClient, database);
     }
 
     @Bean
-    public MongoTemplate mongoTemplate (SimpleMongoClientDatabaseFactory mongoClientDatabaseFactory) {
+    public MongoTemplate mongoTemplate(SimpleMongoClientDatabaseFactory mongoClientDatabaseFactory) {
         MongoTemplate mongoTemplate = new MongoTemplate(mongoClientDatabaseFactory);
         MongoConverter converter = mongoTemplate.getConverter();
         String typeMapper = "_class";
-        if(converter.getTypeMapper().isTypeKey(typeMapper )){
-            ((MappingMongoConverter)converter).setTypeMapper(new DefaultMongoTypeMapper(null));
+        if (converter.getTypeMapper().isTypeKey(typeMapper)) {
+            ((MappingMongoConverter) converter).setTypeMapper(new DefaultMongoTypeMapper(null));
         }
-        return mongoTemplate ;
+        return mongoTemplate;
     }
 
-    @Bean
-    MongoTransactionManager mongoTransactionManager(MongoDatabaseFactory mongoDatabaseFactory){
-        return new MongoTransactionManager(mongoDatabaseFactory);
-    }
+//    @Bean
+//    PlatformTransactionManager mongoTransactionManager(MongoDatabaseFactory mongoDatabaseFactory) {
+//        return new MongoTransactionManager(mongoDatabaseFactory);
+//    }
 }

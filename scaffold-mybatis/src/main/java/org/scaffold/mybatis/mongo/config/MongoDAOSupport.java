@@ -8,8 +8,6 @@ package org.scaffold.mybatis.mongo.config;
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.json.JsonMode;
@@ -18,6 +16,8 @@ import org.scaffold.common.json.GsonUtils;
 import org.scaffold.mybatis.generator.MongoReflectionIgnore;
 import org.scaffold.mybatis.generator.util.reflect.ReflectUtil;
 import org.scaffold.mybatis.pageHelper.PageEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.lang.reflect.Field;
@@ -27,7 +27,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public interface MongoDAOSupport {
-    static final Log logger = LogFactory.getLog("mongodb ");
+    public final Logger logger = LoggerFactory.getLogger(MongoDAOSupport.class);
+
     static final String separatorChar = "#";
 
 
@@ -102,7 +103,7 @@ public interface MongoDAOSupport {
             UpdateManyModel<Document> updateManyModel = new UpdateManyModel<>(filter, update,
                     new UpdateOptions().upsert(isUpsert));
 
-            logger.debug("filter : " + filter + "   update:" + update);
+            logger.info("filter : " + filter + "   update:" + update);
 
             requests.add(updateManyModel);
         });
@@ -172,6 +173,10 @@ public interface MongoDAOSupport {
         while (mongoCursor.hasNext()) {
             result.add(mongoCursor.next());
         }
+
+        logger.info(collection.getNamespace().getFullName() + "::findMany::" + filter.filter().toString() + "===="
+                + result.size());
+
         return result;
     }
 
@@ -193,7 +198,7 @@ public interface MongoDAOSupport {
                     document.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), clazz));
         }
 
-        logger.debug(collection.getNamespace().getFullName() + "::findMany::" + filter.filter().toString() + "===="
+        logger.info(collection.getNamespace().getFullName() + "::findMany::" + filter.filter().toString() + "===="
                 + result.size());
 
         return result;
@@ -235,7 +240,8 @@ public interface MongoDAOSupport {
             }
         }
 
-        logger.debug(collection.getNamespace().getFullName() + "::findManyByPage::" + filter.filter().toString()
+        logger.info(collection.getNamespace().getFullName() +
+                "::findManyByPage::" + filter.filter().toString()
                 + "====" + result.size());
         return result;
     }
@@ -268,6 +274,7 @@ public interface MongoDAOSupport {
     default long getCount(MongoTemplate mongoTemplate, String collectionName,
                           MongoFindFilter filter) {
         MongoCollection<Document> collection = mongoTemplate.getCollection(collectionName);
+        logger.info(collection.getNamespace().getFullName() + "::getCount::" + filter.filter().toString());
         return collection.countDocuments(filter.filter());
     }
 
@@ -340,11 +347,11 @@ public interface MongoDAOSupport {
                 pageNum = filter.getPageEntity().getPageCurrent();
             }
 
-            pipeline.add(new Document("$count","count"));
+            pipeline.add(new Document("$count", "count"));
 
             AggregateIterable<Document> countDocument = collection.aggregate(pipeline);
 
-            MongoCursor<Document> mongoCursorCount =countDocument.iterator();
+            MongoCursor<Document> mongoCursorCount = countDocument.iterator();
 
 
             List<Document> result = new ArrayList<>();
@@ -378,7 +385,7 @@ public interface MongoDAOSupport {
 
         }
 
-        logger.info(collection.getNamespace().getFullName() + ":aggregatePage" +
+        logger.info(collection.getNamespace().getFullName() + ":aggregateByPage" +
                 ":" + filter.info() + "====" + result.size());
 
         return result;
