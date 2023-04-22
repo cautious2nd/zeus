@@ -16,6 +16,10 @@
         <module>scaffold-mybatis</module>
         <module>scaffold-mongo</module>
         <module>scaffold-file</module>
+        <module>scaffold-nio</module>
+        <module>scaffold-wx</module>
+
+
     </modules>
 
 
