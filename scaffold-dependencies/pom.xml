@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.wisdom</groupId>
     <artifactId>scaffold-dependencies</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.17.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 
@@ -12,10 +12,10 @@
     <description>scaffold-dependencies</description>
 
 
-    <parent>
+   <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.12.RELEASE</version>
+        <version>3.0.5</version>
         <relativePath/>
     </parent>
 
@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8
         </project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss
         </maven.build.timestamp.format>
 
@@ -39,13 +39,15 @@
         <scaffold-mybatis.version>0.0.1-SNAPSHOT</scaffold-mybatis.version>
         <scaffold-mongo.version>0.0.1-SNAPSHOT</scaffold-mongo.version>
         <scaffold-file.version>0.0.1-SNAPSHOT</scaffold-file.version>
+        <scaffold-nio.version>0.0.1-SNAPSHOT</scaffold-nio.version>
+        <scaffold-wx.version>0.0.1-SNAPSHOT</scaffold-wx.version>
 
 
         <!-- apache commons version -->
         <collections4.version>4.4</collections4.version>
         <math3.version>3.6.1</math3.version>
 
-        <spring-cloud-dependencies.version>Hoxton.SR12</spring-cloud-dependencies.version>
+        <spring-cloud-dependencies.version>2022.0.2</spring-cloud-dependencies.version>
 
 
         <!-- maven plugins -->
@@ -106,6 +108,24 @@
                 <groupId>com.wisdom</groupId>
                 <artifactId>scaffold-mybatis</artifactId>
                 <version>${scaffold-mybatis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wisdom</groupId>
+                <artifactId>scaffold-mybatis</artifactId>
+                <version>${scaffold-mybatis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.scaffold</groupId>
+                <artifactId>scaffold-nio</artifactId>
+                <version>${scaffold-nio.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.scaffold</groupId>
+                <artifactId>scaffold-wx</artifactId>
+                <version>${scaffold-wx.version}</version>
             </dependency>
 
 
