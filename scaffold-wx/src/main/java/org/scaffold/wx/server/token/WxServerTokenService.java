@@ -2,6 +2,7 @@ package org.scaffold.wx.server.token;
 
 
 import org.scaffold.wx.server.token.response.AccessTokenResponseModel;
+import org.scaffold.wx.server.token.response.OauthAccessTokenResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,13 +19,17 @@ public class WxServerTokenService {
 
 
 
-
     /**
      * 获取AccessToken
      * @return
      */
     public AccessTokenResponseModel getAccessToken() {
         return accessTokenModel.getToken();
+    }
+
+
+    public OauthAccessTokenResponseModel getOauuthAccessToken(String code){
+        return OauthAccessTokenModel.get().getToken(code);
     }
 
 
