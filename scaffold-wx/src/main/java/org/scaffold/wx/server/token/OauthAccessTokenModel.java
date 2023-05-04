@@ -47,7 +47,7 @@ public class OauthAccessTokenModel implements AccessTokenModel {
         SCAFFOLD_LOGGER.info("开始根据code[{}]获取token信息.",code);
         this.code = code;
         String body = HttpRequestUtils.get(GET_ACCESS_TOKEN_URL + getParams());
-        SCAFFOLD_LOGGER.info("返回token信息:",body);
+        SCAFFOLD_LOGGER.info("返回token信息:{}",body);
         OauthAccessTokenResponseModel oauthAccessTokenResponseModel = GsonUtils.get().readValue(body, OauthAccessTokenResponseModel.class);
        
         return oauthAccessTokenResponseModel;
