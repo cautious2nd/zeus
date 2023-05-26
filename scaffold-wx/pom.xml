@@ -2,13 +2,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.wisdom</groupId>
+        <groupId>org.zeus</groupId>
         <artifactId>scaffold-dependencies</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.17.1-SNAPSHOT</version>
         <relativePath>../scaffold-dependencies</relativePath>
     </parent>
 
-    <groupId>org.scaffold</groupId>
+    <groupId>org.zeus</groupId>
     <artifactId>scaffold-wx</artifactId>
     <packaging>jar</packaging>
 
@@ -17,6 +17,19 @@
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.github.wechatpay-apiv3</groupId>
+            <artifactId>wechatpay-apache-httpclient</artifactId>
+            <version>0.4.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.wechatpay-apiv3</groupId>
+            <artifactId>wechatpay-java</artifactId>
+            <version>0.2.7</version>
+        </dependency>
+
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -25,12 +38,17 @@
 
 
         <dependency>
-            <groupId>com.wisdom</groupId>
+            <groupId>org.zeus</groupId>
             <artifactId>scaffold-common</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.wisdom</groupId>
+            <groupId>org.zeus</groupId>
+            <artifactId>scaffold-file</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.zeus</groupId>
             <artifactId>scaffold-logger</artifactId>
         </dependency>
 
