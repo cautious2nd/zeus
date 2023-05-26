@@ -7,13 +7,13 @@
 
 
 	<parent>
-		<groupId>com.wisdom</groupId>
+		<groupId>org.zeus</groupId>
 		<artifactId>scaffold-dependencies</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.17.1-SNAPSHOT</version>
 		<relativePath>../scaffold-dependencies</relativePath>
 	</parent>
 
-	<groupId>com.wisdom</groupId>
+	<groupId>org.zeus</groupId>
 	<artifactId>scaffold-common</artifactId>
 	<packaging>jar</packaging>
 
@@ -38,7 +38,6 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-jwt</artifactId>
-			<version>1.0.8.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -48,12 +47,12 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-jwt</artifactId>
-			<version>1.0.8.RELEASE</version>
+			<version>1.1.1.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.7.4</version> </dependency>
+			<version>2.14.2</version> </dependency>
 	</dependencies>
 
 </project>

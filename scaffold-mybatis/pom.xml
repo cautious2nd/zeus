@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.wisdom</groupId>
+        <groupId>org.zeus</groupId>
         <artifactId>scaffold-dependencies</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.17.1-SNAPSHOT</version>
         <relativePath>../scaffold-dependencies</relativePath>
     </parent>
-    <groupId>com.wisdom</groupId>
+    <groupId>org.zeus</groupId>
     <artifactId>scaffold-mybatis</artifactId>
     <packaging>jar</packaging>
     <name>scaffold-mybatis</name>
@@ -18,51 +18,33 @@
 
     <dependencies>
 
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>31.1-jre</version>
-        </dependency>
-
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>3.0.1</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.22</version>
-        </dependency>
-
-        <!--druid 依赖-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.2.17</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+
 
         <dependency>
-            <groupId>com.wisdom</groupId>
+            <groupId>org.zeus</groupId>
             <artifactId>scaffold-logger</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-
 
         <dependency>
-            <groupId>com.wisdom</groupId>
+            <groupId>org.zeus</groupId>
             <artifactId>scaffold-common</artifactId>
             <exclusions>
                 <exclusion>

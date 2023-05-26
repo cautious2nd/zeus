@@ -6,14 +6,14 @@
 
 
 	<parent>
-		<groupId>com.wisdom</groupId>
+		<groupId>org.zeus</groupId>
 		<artifactId>scaffold-dependencies</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.17.1-SNAPSHOT</version>
 		<relativePath>../scaffold-dependencies</relativePath>
 	</parent>
 
 
-	<groupId>com.wisdom</groupId>
+	<groupId>org.zeus</groupId>
 	<artifactId>scaffold-feign</artifactId>
 	<packaging>jar</packaging>
 
@@ -31,7 +31,7 @@
 
 
 		<dependency>
-			<groupId>com.wisdom</groupId>
+			<groupId>org.zeus</groupId>
 			<artifactId>scaffold-common</artifactId>
 		</dependency>
 

@@ -2,7 +2,7 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.wisdom</groupId>
+    <groupId>org.zeus</groupId>
     <artifactId>scaffold-dependencies</artifactId>
     <version>0.17.1-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -27,20 +27,21 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss
         </maven.build.timestamp.format>
 
-        <scaffold-common.version>0.0.1-SNAPSHOT</scaffold-common.version>
-        <scaffold-logger.version>0.0.1-SNAPSHOT</scaffold-logger.version>
-        <scaffold-exception.version>0.0.1-SNAPSHOT</scaffold-exception.version>
-        <scaffold-minio.version>0.0.1-SNAPSHOT</scaffold-minio.version>
-        <scaffold-feign.version>0.0.1-SNAPSHOT</scaffold-feign.version>
-        <scaffold-resteasy.version>0.0.1-SNAPSHOT</scaffold-resteasy.version>
-        <scaffold-swagger-ui.version>0.0.1-SNAPSHOT</scaffold-swagger-ui.version>
-        <scaffold-cache.version>0.0.1-SNAPSHOT</scaffold-cache.version>
-        <scaffold-session.version>0.0.1-SNAPSHOT</scaffold-session.version>
-        <scaffold-mybatis.version>0.0.1-SNAPSHOT</scaffold-mybatis.version>
-        <scaffold-mongo.version>0.0.1-SNAPSHOT</scaffold-mongo.version>
-        <scaffold-file.version>0.0.1-SNAPSHOT</scaffold-file.version>
-        <scaffold-nio.version>0.0.1-SNAPSHOT</scaffold-nio.version>
-        <scaffold-wx.version>0.0.1-SNAPSHOT</scaffold-wx.version>
+        <scaffold-common.version>0.17.1-SNAPSHOT</scaffold-common.version>
+        <scaffold-logger.version>0.17.1-SNAPSHOT</scaffold-logger.version>
+        <scaffold-exception.version>0.17.1-SNAPSHOT</scaffold-exception.version>
+        <scaffold-minio.version>0.17.1-SNAPSHOT</scaffold-minio.version>
+        <scaffold-feign.version>0.17.1-SNAPSHOT</scaffold-feign.version>
+        <scaffold-resteasy.version>0.17.1-SNAPSHOT</scaffold-resteasy.version>
+        <scaffold-swagger-ui.version>0.17.1-SNAPSHOT</scaffold-swagger-ui.version>
+        <scaffold-cache.version>0.17.1-SNAPSHOT</scaffold-cache.version>
+        <scaffold-session.version>0.17.1-SNAPSHOT</scaffold-session.version>
+        <scaffold-mybatis.version>0.17.1-SNAPSHOT</scaffold-mybatis.version>
+        <scaffold-mongo.version>0.17.1-SNAPSHOT</scaffold-mongo.version>
+        <scaffold-file.version>0.17.1-SNAPSHOT</scaffold-file.version>
+        <scaffold-nio.version>0.17.1-SNAPSHOT</scaffold-nio.version>
+        <scaffold-wx.version>0.17.1-SNAPSHOT</scaffold-wx.version>
+        <scaffold-mqtt.version>0.17.1-SNAPSHOT</scaffold-mqtt.version>
 
 
         <!-- apache commons version -->
@@ -75,57 +76,63 @@
 
 
             <dependency>
-                <groupId>com.wisdom</groupId>
+                <groupId>org.zeus</groupId>
                 <artifactId>scaffold-common</artifactId>
                 <version>${scaffold-common.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.wisdom</groupId>
+                <groupId>org.zeus</groupId>
                 <artifactId>scaffold-feign</artifactId>
                 <version>${scaffold-feign.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.wisdom</groupId>
+                <groupId>org.zeus</groupId>
                 <artifactId>scaffold-logger</artifactId>
                 <version>${scaffold-logger.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.wisdom</groupId>
+                <groupId>org.zeus</groupId>
                 <artifactId>scaffold-mongo</artifactId>
                 <version>${scaffold-mongo.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.wisdom</groupId>
+                <groupId>org.zeus</groupId>
                 <artifactId>scaffold-file</artifactId>
                 <version>${scaffold-file.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.wisdom</groupId>
+                <groupId>org.zeus</groupId>
                 <artifactId>scaffold-mybatis</artifactId>
                 <version>${scaffold-mybatis.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.wisdom</groupId>
+                <groupId>org.zeus</groupId>
                 <artifactId>scaffold-mybatis</artifactId>
                 <version>${scaffold-mybatis.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.scaffold</groupId>
+                <groupId>org.zeus</groupId>
                 <artifactId>scaffold-nio</artifactId>
                 <version>${scaffold-nio.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.scaffold</groupId>
+                <groupId>org.zeus</groupId>
                 <artifactId>scaffold-wx</artifactId>
                 <version>${scaffold-wx.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.zeus</groupId>
+                <artifactId>scaffold-mqtt</artifactId>
+                <version>${scaffold-mqtt.version}</version>
             </dependency>
 
 
