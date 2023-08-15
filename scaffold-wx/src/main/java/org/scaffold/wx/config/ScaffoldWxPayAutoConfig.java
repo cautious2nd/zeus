@@ -1,13 +1,12 @@
 package org.scaffold.wx.config;
 
-import com.scaffold.file.io.FileIOUtil;
+import com.scaffold.file.io.FileIOUtils;
 import com.wechat.pay.java.core.Config;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
 import org.scaffold.logger.log.ScaffoldLogger;
 import org.scaffold.wx.config.yml.ScaffoldWxConfig;
 import org.scaffold.wx.server.pay.WxNativePayService;
-import org.scaffold.wx.server.token.WxServerTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -34,7 +33,7 @@ public class ScaffoldWxPayAutoConfig {
     public RSAAutoCertificateConfig wxPayConfig() {
         Resource resource2 = resourceLoader.getResource("classpath:key/apiclient_key.pem");
         try {
-            String fileValue = FileIOUtil.readFileFromSteam(resource2.getInputStream());
+            String fileValue = FileIOUtils.readFileFromStream(resource2.getInputStream());
             RSAAutoCertificateConfig config =
                     new RSAAutoCertificateConfig.Builder()
                             .merchantId(wxConfig.getMerchantId())
