@@ -4,6 +4,7 @@ import org.scaffold.common.http.request.HttpRequestUtils;
 import org.scaffold.common.json.GsonUtils;
 import org.scaffold.common.spring.SpringContextHolder;
 import org.scaffold.logger.log.ScaffoldLogger;
+import org.scaffold.wx.config.yml.ScaffoldWxAMPConfig;
 import org.scaffold.wx.config.yml.ScaffoldWxConfig;
 import org.scaffold.wx.server.token.response.Code2SessionResponseModel;
 import org.scaffold.wx.server.token.response.OauthAccessTokenResponseModel;
@@ -18,7 +19,7 @@ public class Code2SessionModel {
     private String jsCode;//   js_code	string	是	登录时获取的 code，可通过wx.login获取
     private String grantType="authorization_code";//  grant_type	string	是	授权类型，此处只需填写 authorization_code
 
-    private ScaffoldWxConfig wxConfig = SpringContextHolder.getBean(ScaffoldWxConfig.class);
+    private ScaffoldWxAMPConfig wxConfig = SpringContextHolder.getBean(ScaffoldWxAMPConfig.class);
 
     public String getJsCode() {
         return jsCode;
